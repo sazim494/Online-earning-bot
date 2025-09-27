@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>CashReward - Earn Real Money</title>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    
+    <style>
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #121212; color: #e5e7eb; -webkit-tap-highlight-color: transparent; }
+        .card-bg { background-color: #1e1e1e; border: 1px solid #374151; }
+        .text-accent { color: #f59e0b; }
+        .btn, .btn-accent, .btn-outline-accent { transition: all 0.15s ease-in-out; transform: scale(1); }
+        .btn:active, .btn-accent:active, .btn-outline-accent:active { transform: scale(0.96); }
+        .btn-accent { background-color: #f59e0b; color: #121212; font-weight: 600; }
+        .btn-accent:disabled { background-color: #4b5563; color: #9ca3af; cursor: not-allowed; }
+        .btn-outline-accent { border: 1px solid #f59e0b; color: #f59e0b; font-weight: 600; }
+        .btn-outline-accent:hover { background-color: rgba(245, 158, 11, 0.1); }
+        .input-field { background-color: #2c2c2c; border: 1px solid #4b5563; color: white; border-radius: 0.5rem; padding: 0.75rem 1rem; }
+        .input-field:focus { border-color: #f59e0b; box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.5); outline: none; }
+        .main-page, .sub-page { display: none; }
+        .main-page.active { display: flex; animation: fadeIn 0.4s ease-in-out; }
+        .sub-page.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        .bottom-nav a.active { color: #f59e0b; }
+        .modal-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 40; display: none; animation: fadeIn 0.3s; }
+        .modal-content { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 50; display: none; animation: fadeIn 0.3s; }
+        
+        /* Spin Wheel Styles */
+        #spin-wheel-modal-content {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 340px;
+            text-align: center;
+        }
+        .wheel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .wheel-header h2 { margin: 0; font-size: 20px; color: #fff; }
+        .wheel-coins { display: flex; align-items: center; gap: 6px; font-size: 18px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 20px; }
+        .wheel-coins img { width: 22px; height: 22px; }
+        .wheel-wrapper { position: relative; margin: 20px auto; width: 280px; height: 280px; }
+        #spin-wheel-canvas { border-radius: 50%; width: 280px; height: 280px; }
+        .wheel-pointer {
+            position: absolute; top: -15px; left: 50%;
+            transform: translateX(-50%); width: 0; height: 0;
+            border-left: 20px solid transparent; border-right: 20px solid transparent;
+            border-bottom: 35px solid #ff1744;
+            filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.5)); z-index: 10;
+        }
+        #spin-now-btn {
+            margin-top: 25px; padding: 15px 45px; font-size: 20px;
+            background: linear-gradient(145deg, #ff4081, #d81b60);
+            border: none; border-radius: 50px; color: #fff; cursor: pointer;
+            transition: 0.3s; box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+        }
+        #spin-now-btn:disabled { background: gray; cursor: not-allowed; }
+        .result-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 999; }
+        .result-modal-content { background: #fff; color: #000; padding: 25px; border-radius: 12px; text-align: center; width: 80%; max-width: 300px; animation: pop 0.3s ease-out; }
+        .result-modal-content h3 { margin-top: 0; color: #4caf50; }
+        .result-modal-content button { margin-top: 15px; padding: 10px 25px; font-size: 16px; background: #4caf50; border: none; border-radius: 8px; color: #fff; cursor: pointer; }
+        @keyframes pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        #banner-ad-container { min-height: 50px; background-color: #1e1e1e; display: flex; align-items: center; justify-content: center; }
+        #mini-game-button { -webkit-user-select: none; user-select: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="max-w-md mx-auto">
+
+    <div id="loader" class="hidden fixed inset-0 dark-bg bg-opacity-80 flex items-center justify-center z-[1001]">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-amber-500"></div>
+    </div>
+    <div id="toast-container" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-[1000] w-11/12 max-w-md pointer-events-none"></div>
+
+    <!-- Modals -->
+    <div id="spin-wheel-modal-overlay" class="modal-overlay"></div>
+    <div id="spin-wheel-modal" class="modal-content">
+        <div id="spin-wheel-modal-content">
+            <header class="wheel-header">
+              <h2>ভাগ্যের চাকা</h2>
+              <div class="wheel-coins">
+                <img src="https://cdn-icons-png.flaticon.com/512/138/138281.png" alt="coin">
+                <span id="spin-modal-coin-balance">0</span>
+              </div>
+            </header>
+            <main>
+              <div class="wheel-wrapper">
+                <canvas id="spin-wheel-canvas" width="280" height="280"></canvas>
+                <div class="wheel-pointer"></div>
+              </div>
+              <button id="spin-now-btn">স্পিন করুন!</button>
+              <p class="text-sm text-gray-300 mt-2">আজকের বাকি স্পিন: <span id="spins-left-count">...</span></p>
+            </main>
+        </div>
+        <button id="close-spin-modal-btn" class="absolute -top-3 -right-3 bg-gray-800 rounded-full p-1.5"><i data-lucide="x" class="w-5 h-5 text-white"></i></button>
+    </div>
+
+    <div id="resultModal" class="result-modal">
+        <div class="result-modal-content">
+          <h3>🎉 আপনি জিতেছেন!</h3>
+          <p id="winningAmount"></p>
+          <button id="close-result-modal-btn">ঠিক আছে</button>
+        </div>
+    </div>
+    
+    <div id="mini-game-modal-overlay" class="modal-overlay"></div>
+    <div id="mini-game-modal" class="modal-content w-full max-w-xs text-center card-bg p-6 rounded-xl">
+        <h2 class="text-2xl font-bold text-white mb-2">মিনি গেম</h2>
+        <p class="text-gray-400 mb-4">যত দ্রুত সম্ভব বাটনে ট্যাপ করুন!</p>
+        <div id="game-start-view">
+            <p class="mb-4">আপনাকে <span id="game-time-info" class="font-bold text-accent"></span> সেকেন্ডে <span id="game-clicks-info" class="font-bold text-accent"></span> বার ট্যাপ করতে হবে।</p>
+            <button id="start-game-btn" class="w-full p-3 rounded-lg btn-accent">শুরু করুন</button>
+        </div>
+        <div id="game-play-view" class="hidden">
+            <p class="text-lg">সময় বাকি: <span id="game-timer" class="font-bold text-red-500"></span></p>
+            <p class="text-lg mb-4">ট্যাপ সংখ্যা: <span id="game-click-counter" class="font-bold text-amber-500"></span></p>
+            <button id="mini-game-button" class="w-32 h-32 bg-amber-500 text-black rounded-full text-2xl font-bold mx-auto flex items-center justify-center">ট্যাপ!</button>
+        </div>
+        <p class="text-sm text-gray-400 mt-4">আজকের বাকি গেম: <span id="games-left-count">...</span></p>
+        <button id="close-game-modal-btn" class="absolute -top-2 -right-2 bg-gray-800 rounded-full p-1.5"><i data-lucide="x" class="w-5 h-5 text-white"></i></button>
+    </div>
+
+    <!-- Authentication Section -->
+    <div id="auth-section" class="min-h-screen p-6 flex-col justify-center main-page active">
+        <h1 class="text-4xl font-bold text-center mb-2 text-accent">CashReward</h1>
+        <p class="text-center text-gray-400 mb-8">শুরু করতে লগইন অথবা সাইন আপ করুন</p>
+        <div id="auth-container">
+            <div id="login-view">
+                <input id="login-email" type="email" placeholder="আপনার ইমেইল" class="w-full input-field mb-4">
+                <input id="login-password" type="password" placeholder="আপনার পাসওয়ার্ড" class="w-full input-field mb-4">
+                <button id="login-btn" class="w-full p-3 rounded-lg btn-accent mb-4">লগইন করুন</button>
+                <p class="text-center text-gray-400">অ্যাকাউন্ট নেই? <a href="#" id="show-signup" class="font-semibold text-accent hover:underline">সাইন আপ করুন</a></p>
+            </div>
+            <div id="signup-view" class="hidden">
+                <input id="signup-name" type="text" placeholder="আপনার সম্পূর্ণ নাম" class="w-full input-field mb-4">
+                <input id="signup-email" type="email" placeholder="আপনার ইমেইল" class="w-full input-field mb-4">
+                <input id="signup-password" type="password" placeholder="একটি নতুন পাসওয়ার্ড দিন" class="w-full input-field mb-4">
+                <button id="signup-btn" class="w-full p-3 rounded-lg btn-accent mb-4">সাইন আপ করুন</button>
+                <p class="text-center text-gray-400">ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="#" id="show-login" class="font-semibold text-accent hover:underline">লগইন করুন</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="min-h-screen flex-col main-page">
+        <header class="flex items-center justify-between p-4 sticky top-0 bg-black/50 backdrop-blur-md z-10 border-b border-gray-800">
+            <h1 class="text-xl font-bold">CashReward</h1>
+            <div class="flex items-center space-x-2">
+                <div class="relative cursor-pointer p-1" id="notification-bell">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                    <div id="notification-dot" class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-gray-800" style="display: none;"></div>
+                </div>
+                <div class="p-1 cursor-pointer" onclick="navigateTo('profile-page')"><i data-lucide="user-circle-2" class="w-6 h-6"></i></div>
+            </div>
+        </header>
+
+        <!-- Banner Ad Container -->
+        <div id="banner-ad-container" class="sticky top-[65px] z-[9]">
+            <!-- Banner Ad script will be injected here by JavaScript -->
+        </div>```
+
+---
+
+এটি পার্ট ১। আপনার সুবিধা অনুযায়ী এটি আপনার ফাইলে পেস্ট করে আমাকে জানান। এরপর আমি আপনাকে পার্ট ২ দেব।
+        <main class="flex-grow p-4">
+            <!-- Home Page -->
+            <div id="home-page" class="space-y-6 sub-page">
+                <div class="card-bg p-5 rounded-xl shadow-lg">
+                    <p class="text-gray-400 text-sm">আপনার বর্তমান ব্যালেন্স</p>
+                    <div class="flex items-center justify-between mt-1">
+                        <p class="text-3xl font-bold"><span id="coin-balance">0</span> Coins</p>
+                        <button id="home-withdraw-btn" class="btn-accent px-6 py-2 rounded-lg text-sm">উত্তোলন</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="card-bg p-4 rounded-lg text-center flex flex-col items-center justify-center">
+                        <i data-lucide="calendar-check" class="w-8 h-8 mx-auto text-accent mb-2"></i>
+                        <h3 class="font-semibold text-sm">দৈনিক চেক-ইন</h3>
+                        <button id="daily-check-in-btn" class="w-full mt-2 py-2 rounded-lg btn-accent text-sm">Claim</button>
+                    </div>
+                    <div class="card-bg p-4 rounded-lg text-center flex flex-col items-center justify-center">
+                        <i data-lucide="gift" class="w-8 h-8 mx-auto text-accent mb-2"></i>
+                        <h3 class="font-semibold text-sm">ভাগ্যের চাকা</h3>
+                        <button id="show-spin-wheel-btn" class="w-full mt-2 py-2 rounded-lg btn-accent text-sm">Spin Now</button>
+                    </div>
+                </div>
+                <section>
+                    <div class="flex justify-between items-center mb-4"><h2 class="text-lg font-semibold">দৈনিক টাস্ক</h2><p class="text-sm text-gray-400">আজকের বাকি: <span id="ads-left-count" class="font-bold text-accent">...</span> টি</p></div>
+                    <div id="task-list" class="space-y-3"></div>
+                </section>
+                <section>
+                    <h2 class="text-lg font-semibold mb-3">সাম্প্রতিক লেনদেন</h2>
+                    <div id="recent-activity-list" class="space-y-2"></div>
+                </section>
+            </div>
+            
+            <!-- Wallet Page -->
+            <div id="wallet-page" class="space-y-6 sub-page">
+                <h2 class="text-xl font-bold text-center">আমার ওয়ালেট</h2>
+                <div class="card-bg p-4 rounded-lg">
+                    <h3 class="font-semibold mb-3">টাকা উত্তোলন করুন</h3>
+                    <p class="text-sm text-gray-400 mb-1">বর্তমান ব্যালেন্স: <span class="font-bold text-accent"><span id="wallet-coin-balance">0</span> Coins</span></p>
+                    <p class="text-sm text-gray-400 mb-2">সর্বনিম্ন উত্তোলন: <span id="min-withdrawal-info">...</span> Coins</p>
+                    <p class="text-sm text-gray-400 mb-4 font-semibold" id="coin-value-info">...</p>
+                    <input id="withdraw-amount" type="number" placeholder="কয়েনের পরিমাণ লিখুন" class="w-full input-field mb-3">
+                    <select id="withdraw-method" class="w-full input-field mb-3"></select>
+                    <div id="payment-details-container"></div>
+                    <button id="withdraw-btn" class="w-full p-3 rounded-lg btn-accent mt-3">উত্তোলনের অনুরোধ পাঠান</button>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-3">উত্তোলনের ইতিহাস</h3>
+                    <div id="withdrawal-history-list" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- Refer Page -->
+            <div id="refer-page" class="space-y-6 sub-page">
+                 <h2 class="text-xl font-bold text-center">রেফার করুন এবং আয় করুন</h2>
+                 <div class="card-bg p-6 rounded-lg text-center">
+                     <p class="text-gray-400 mb-2">আপনার রেফারেল কোড</p>
+                     <div class="bg-gray-800 p-3 rounded-lg flex items-center justify-center mb-4">
+                         <span id="referral-code" class="text-2xl font-bold tracking-widest text-white">...</span>
+                         <button id="copy-code-btn" class="ml-4 p-2 rounded-full hover:bg-gray-700"><i data-lucide="copy" class="w-5 h-5 text-gray-400"></i></button>
+                     </div>
+                     <p class="text-sm text-gray-300">আপনার বন্ধুকে রেফার করে <span id="referral-bonus-info" class="font-bold text-accent">...</span> কয়েন বোনাস পান।</p>
+                 </div>
+                 <button id="share-btn" class="w-full p-3 rounded-lg btn-accent flex items-center justify-center gap-2"><i data-lucide="share-2"></i>আপনার রেফারেল লিঙ্ক শেয়ার করুন</button>
+                 <div class="card-bg p-4 rounded-lg mt-6">
+                    <h3 class="font-semibold mb-3 text-center">অন্যের রেফারেল কোড দিন</h3>
+                    <input id="enter-referral-code" type="text" placeholder="যদি লিঙ্ক কাজ না করে, কোডটি এখানে দিন" class="w-full input-field mb-3">
+                    <button id="apply-referral-btn" class="w-full p-3 rounded-lg btn-outline-accent">কোড প্রয়োগ করুন</button>
+                 </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile-page" class="space-y-6 sub-page">
+                <h2 class="text-xl font-bold text-center mb-4">প্রোফাইল</h2>
+                <div class="flex flex-col items-center">
+                    <div class="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center mb-3">
+                        <i data-lucide="user" class="w-12 h-12 text-gray-400"></i>
+                    </div>
+                    <h2 id="profile-name" class="text-xl font-bold">...</h2>
+                    <p id="profile-email" class="text-gray-400">...</p>
+                </div>
+                <button id="logout-btn" class="w-full mt-6 p-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold flex items-center justify-center gap-2"><i data-lucide="log-out"></i>লগআউট</button>
+            </div>
+            
+            <!-- Notifications Page -->
+            <div id="notifications-page" class="space-y-4 sub-page">
+                <h2 class="text-xl font-bold text-center">নোটিফিকেশন</h2>
+                <div id="notifications-list" class="space-y-3"></div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav sticky bottom-0 grid grid-cols-4 items-center text-center py-2 card-bg">
+            <a href="#" class="nav-link p-2" data-page="home-page"><i data-lucide="home" class="mx-auto w-6 h-6"></i><span class="text-xs font-medium">হোম</span></a>
+            <a href="#" class="nav-link p-2" data-page="wallet-page"><i data-lucide="wallet-2" class="mx-auto w-6 h-6"></i><span class="text-xs font-medium">ওয়ালেট</span></a>
+            <a href="#" class="nav-link p-2" data-page="refer-page"><i data-lucide="users-2" class="mx-auto w-6 h-6"></i><span class="text-xs font-medium">রেফার</span></a>
+            <a href="#" class="nav-link p-2" data-page="profile-page"><i data-lucide="user-circle-2" class="mx-auto w-6 h-6"></i><span class="text-xs font-medium">প্রোফাইল</span></a>
+        </nav>
+    </div>
+</body>
+</html>
+<script type="module">
+    // --- Ad Network SDK Script ---
+    let adSdkScript;
+
+    // --- Firebase Configuration ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGW23aqYMKAjqBmrYNy6fN8kB8y2aiWR8", // আপনার নিজের Firebase Web API Key ব্যবহার করুন
+      authDomain: "rbots-4f874.firebaseapp.com",
+      databaseURL: "https://rbots-4f874-default-rtdb.firebaseio.com",
+      projectId: "rbots-4f874",
+      storageBucket: "rbots-4f874.appspot.com",
+      messagingSenderId: "217252882686",
+      appId: "1:217252882686:web:e5217da460e04fcb7e9daf"
+    };
+    
+    // --- Firebase Imports ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null, userData = null, appConfig = {};
+    let isSpinning = false;
+    let miniGameTimer = null, clickCount = 0;
+
+    // --- App Initialization ---
+    window.onload = () => {
+        captureReferralCodeFromURL();
+        setupEventListeners();
+        onAuthStateChanged(auth, handleAuthStateChange);
+    };
+
+    function captureReferralCodeFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) { sessionStorage.setItem('referralCode', refCode.toUpperCase()); }
+    }
+
+    // --- Core Functions ---
+    async function handleAuthStateChange(user) {
+        if (user) {
+            currentUser = user;
+            document.getElementById('loader').style.display = 'flex';
+            
+            await fetchAppConfig();
+            loadAdSdk(); 
+            await fetchUserData(); 
+            
+            if (userData && userData.isBlocked) {
+                showToast("আপনার অ্যাকাউন্টটি ব্লক করা হয়েছে।", "error");
+                await signOut(auth);
+                return; 
+            }
+
+            if (userData) {
+                await checkNewNotifications();
+                updateUI();
+                injectBannerAd();
+                showMainPage('app-container');
+                navigateTo('home-page');
+            }
+            document.getElementById('loader').style.display = 'none';
+        } else {
+            currentUser = null; userData = null;
+            showMainPage('auth-section');
+            document.getElementById('loader').style.display = 'none';
+        }
+    }
+    
+    async function fetchAppConfig() {
+        const configRef = doc(db, "config", "main");
+        try {
+            const configSnap = await getDoc(configRef);
+            const defaults = { 
+                minWithdrawal: 5000, paymentMethods: ["bKash", "Nagad"], dailyAdLimit: 10, coinValueTaka: 85,
+                welcomeBonus: 50, referralBonusGiver: 100, referralBonusReceiver: 100, 
+                dailyCheckInBonus: 20, dailySpins: 1, coinValueCoins: 1000,
+                bannerAdScript: `<script type="text/javascript" src="//ad.a-ads.com/2422789?size=320x50"><\/script>`, // Demo Banner Ad
+                rewardAdZoneId: '8690632', // Demo Rewarded Ad ID
+                spinWheelSectors: [
+                    { label: "50", value: 50, color: "#d62828" }, { label: "100", value: 100, color: "#f77f00" },
+                    { label: "150", value: 150, color: "#fcbf49" }, { label: "200", value: 200, color: "#003049" },
+                    { label: "250", value: 250, color: "#d62828" }, { label: "300", value: 300, color: "#f77f00" },
+                    { label: "350", value: 350, color: "#fcbf49" }, { label: "Try Again", value: 0, color: "#003049" }
+                ],
+                rewardInterstitial: 50, rewardPopup: 30, rewardInApp: 10,
+                miniGameReward: 25, miniGameTime: 15, miniGameClicks: 20, miniGameDailyLimit: 3
+            };
+            appConfig = configSnap.exists() ? { ...defaults, ...configSnap.data() } : defaults;
+        } catch (error) { showToast("অ্যাপ সেটিংস লোড করা যায়নি।", "error"); }
+    }
+
+    async function fetchUserData() {
+        if (!currentUser) return;
+        const userRef = doc(db, "users", currentUser.uid);
+        try {
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                userData = userSnap.data();
+                const today = new Date().toISOString().split('T')[0];
+                if(userData.lastAdWatchDate !== today) {
+                    await updateDoc(userRef, { dailyAdCount: 0, dailySpinsLeft: appConfig.dailySpins, lastAdWatchDate: today, miniGamesPlayed: 0 });
+                    userData = {...userData, dailyAdCount: 0, dailySpinsLeft: appConfig.dailySpins, lastAdWatchDate: today, miniGamesPlayed: 0};
+                }
+            } else {
+                const nameFromSignup = sessionStorage.getItem('signupName') || currentUser.email.split('@')[0];
+                sessionStorage.removeItem('signupName');
+                const ownReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+                const referredByCode = sessionStorage.getItem('referralCode');
+                const defaultUserData = {
+                    uid: currentUser.uid, name: nameFromSignup, email: currentUser.email,
+                    balance: appConfig.welcomeBonus, referralCode: ownReferralCode, referredBy: referredByCode || null,
+                    lastNotificationCheck: new Date(), createdAt: serverTimestamp(), dailyAdCount: 0, 
+                    lastAdWatchDate: new Date().toISOString().split('T')[0], isBlocked: false,
+                    lastCheckInDate: '1970-01-01', dailySpinsLeft: appConfig.dailySpins, miniGamesPlayed: 0
+                };
+                await setDoc(userRef, defaultUserData);
+                userData = defaultUserData;
+                await logTransaction(`স্বাগতম বোনাস`, appConfig.welcomeBonus, 'credit');
+                if (referredByCode) {
+                    await applyReferralBonus(referredByCode);
+                    sessionStorage.removeItem('referralCode');
+                }
+            }
+        } catch (error) { console.error(error); showToast("ব্যবহারকারীর তথ্য লোড করতে সমস্যা হয়েছে।", "error"); }
+    }
+
+    // --- UI Update and Rendering ---
+    function updateUI() {
+        if (!userData || !appConfig) return;
+        document.getElementById('coin-balance').textContent = userData.balance || 0;
+        document.getElementById('wallet-coin-balance').textContent = userData.balance || 0;
+        document.getElementById('spin-modal-coin-balance').textContent = userData.balance || 0;
+        document.getElementById('profile-name').textContent = userData.name || 'N/A';
+        document.getElementById('profile-email').textContent = userData.email || 'N/A';
+        document.getElementById('referral-code').textContent = userData.referralCode || 'N/A';
+        document.getElementById('min-withdrawal-info').textContent = `${appConfig.minWithdrawal} Coins`;
+        document.getElementById('coin-value-info').textContent = `${appConfig.coinValueCoins} Coins = ৳${appConfig.coinValueTaka}`;
+        document.getElementById('referral-bonus-info').textContent = `${appConfig.referralBonusGiver} Coins`;
+        document.getElementById('withdraw-method').innerHTML = (appConfig.paymentMethods || []).map(method => `<option value="${method}">${method}</option>`).join('');
+        updateDailyCheckInUI();
+        document.getElementById('spins-left-count').textContent = userData.dailySpinsLeft ?? appConfig.dailySpins;
+        document.getElementById('games-left-count').textContent = (appConfig.miniGameDailyLimit - (userData.miniGamesPlayed || 0));
+        updateDynamicPaymentFields();
+        updateAdsLeftCount();
+        loadRecentActivity();
+        renderTaskList();
+        lucide.createIcons();
+    }
+    
+    function setupEventListeners(){ 
+        document.getElementById('show-signup').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('login-view').classList.add('hidden'); document.getElementById('signup-view').classList.remove('hidden'); }); 
+        document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('signup-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); }); 
+        document.getElementById('signup-btn').addEventListener('click', handleSignup); 
+        document.getElementById('login-btn').addEventListener('click', handleLogin); 
+        document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); navigateTo(link.dataset.page); })); 
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('#logout-btn')) handleLogout();
+            if (e.target.closest('#notification-bell')) navigateTo('notifications-page');
+            if (e.target.closest('#daily-check-in-btn')) handleDailyCheckIn();
+            if (e.target.closest('#show-spin-wheel-btn')) showSpinWheel();
+            if (e.target.closest('#close-spin-modal-btn') || e.target.id === 'spin-wheel-modal-overlay') { document.getElementById('spin-wheel-modal').style.display = 'none'; document.getElementById('spin-wheel-modal-overlay').style.display = 'none'; }
+            if (e.target.closest('#spin-now-btn')) handleSpin();
+            if (e.target.closest('#show-mini-game-btn')) showMiniGame();
+            if (e.target.closest('#close-game-modal-btn') || e.target.id === 'mini-game-modal-overlay') { document.getElementById('mini-game-modal').style.display = 'none'; document.getElementById('mini-game-modal-overlay').style.display = 'none'; }
+            if (e.target.closest('#start-game-btn')) startGame();
+            if (e.target.closest('#mini-game-button')) handleGameClick();
+            if (e.target.closest('#copy-code-btn')) copyReferralCode();
+            if (e.target.closest('#share-btn')) shareReferralLink();
+            if (e.target.closest('#withdraw-btn')) handleWithdrawal();
+            if (e.target.closest('#home-withdraw-btn')) navigateTo('wallet-page');
+            if (e.target.closest('#apply-referral-btn')) { const code = document.getElementById('enter-referral-code').value; applyReferralBonus(code, true); }
+            if (e.target.closest('#close-result-modal-btn')) { document.getElementById('resultModal').style.display = 'none'; }
+        });
+        document.body.addEventListener('change', (e) => { if (e.target.closest('#withdraw-method')) updateDynamicPaymentFields(); });
+    }
+
+    window.navigateTo = function(pageId){ if (!document.getElementById(pageId)) return; document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); document.querySelectorAll('.nav-link').forEach(link => link.classList.toggle('active', link.dataset.page === pageId)); if (pageId === 'wallet-page') loadWithdrawalHistory(); if (pageId === 'notifications-page') loadNotifications(); }
+    
+    // --- Authentication Handlers ---
+    async function handleSignup(){ const name = document.getElementById('signup-name').value, email = document.getElementById('signup-email').value, password = document.getElementById('signup-password').value; if (!name || !email || !password) return showToast("অনুগ্রহ করে সব ঘর পূরণ করুন।", "error"); document.getElementById('loader').style.display = 'flex'; sessionStorage.setItem('signupName', name); try { await createUserWithEmailAndPassword(auth, email, password); } catch (error) { showToast(error.code === 'auth/email-already-in-use' ? 'এই ইমেইল দিয়ে ইতিমধ্যে অ্যাকাউন্ট আছে।': 'একটি সমস্যা হয়েছে, আবার চেষ্টা করুন।', "error"); document.getElementById('loader').style.display = 'none'; } }
+    async function handleLogin(){ const email = document.getElementById('login-email').value, password = document.getElementById('login-password').value; if (!email || !password) return showToast("অনুগ্রহ করে ইমেইল এবং পাসওয়ার্ড দিন।", "error"); document.getElementById('loader').style.display = 'flex'; try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { showToast("ভুল ইমেইল অথবা পাসওয়ার্ড।", "error"); document.getElementById('loader').style.display = 'none'; } }
+    async function handleLogout(){ await signOut(auth); showToast("সফলভাবে লগআউট করা হয়েছে।", "success"); }
+
+    // --- Core Features ---
+    function updateDailyCheckInUI(){ const btn = document.getElementById('daily-check-in-btn'); if (!btn) return; const today = new Date().toISOString().split('T')[0]; if(userData.lastCheckInDate === today){btn.textContent = 'আজকের বোনাস নেওয়া হয়েছে'; btn.disabled = true;}else{btn.textContent = `Claim +${appConfig.dailyCheckInBonus}`; btn.disabled = false;} }
+    async function handleDailyCheckIn(){ const today = new Date().toISOString().split('T')[0]; if (userData.lastCheckInDate === today) return showToast("আপনি আজকের বোনাস নিয়ে নিয়েছেন।", "error"); const btn = document.getElementById('daily-check-in-btn'); btn.disabled = true; await updateBalance(appConfig.dailyCheckInBonus, 'দৈনিক চেক-ইন বোনাস', true); await updateDoc(doc(db, "users", currentUser.uid), { lastCheckInDate: today }); userData.lastCheckInDate = today; showToast(`অভিনন্দন! আপনি ${appConfig.dailyCheckInBonus} কয়েন পেয়েছেন।`, "success"); updateDailyCheckInUI(); }
+    
+    // --- Spin Wheel Logic ---
+    function showSpinWheel() { document.getElementById('spin-wheel-modal').style.display = 'block'; document.getElementById('spin-wheel-modal-overlay').style.display = 'block'; drawWheel(); }
+    function drawWheel() { const canvas = document.getElementById("spin-wheel-canvas"); const ctx = canvas.getContext("2d"); const sectors = appConfig.spinWheelSectors; const arc = (2 * Math.PI) / sectors.length; ctx.clearRect(0, 0, canvas.width, canvas.height); sectors.forEach((sector, i) => { const startAngle = i * arc - (Math.PI / 2) - (arc / 2); const endAngle = startAngle + arc; ctx.beginPath(); ctx.fillStyle = sector.color; ctx.moveTo(140, 140); ctx.arc(140, 140, 140, startAngle, endAngle); ctx.fill(); ctx.save(); ctx.translate(140, 140); ctx.rotate(startAngle + arc / 2); ctx.textAlign = "right"; ctx.fillStyle = "#fff"; ctx.font = "bold 16px Hind Siliguri"; ctx.fillText(sector.label, 120, 5); ctx.restore(); }); }
+    function handleSpin(){ if (isSpinning) return; if (userData.dailySpinsLeft <= 0) return showToast("আপনার আজকে আর কোনো স্পিন নেই।", "error"); isSpinning = true; document.getElementById('spin-now-btn').disabled = true; const canvas = document.getElementById('spin-wheel-canvas'); canvas.style.transition = 'transform 0s'; canvas.style.transform = `rotate(0deg)`; const sectors = appConfig.spinWheelSectors; const winningSegmentIndex = Math.floor(Math.random() * sectors.length); const segmentAngle = 360 / sectors.length; const stopAtAngle = (360 - (winningSegmentIndex * segmentAngle)) - (segmentAngle / 2); const finalAngle = 360 * 6 + stopAtAngle; setTimeout(() => { canvas.style.transition = 'transform 6s cubic-bezier(0.25, 1, 0.5, 1)'; canvas.style.transform = `rotate(${finalAngle}deg)`; }, 100); userData.dailySpinsLeft -= 1; document.getElementById('spins-left-count').textContent = userData.dailySpinsLeft; updateDoc(doc(db, "users", currentUser.uid), { dailySpinsLeft: userData.dailySpinsLeft }); setTimeout(() => finishSpin(sectors[winningSegmentIndex]), 6100); }
+    async function finishSpin(result) { if (result.value > 0) { await updateBalance(result.value, 'স্পিন হুইল পুরস্কার', true); } document.getElementById("winningAmount").innerText = (result.value > 0) ? `${result.value} Coins!` : "আবার চেষ্টা করুন!"; document.getElementById("resultModal").style.display = "flex"; isSpinning = false; document.getElementById('spin-now-btn').disabled = false; }
+    
+    // --- Mini Game Logic ---
+    function showMiniGame() { if((userData.miniGamesPlayed || 0) >= appConfig.miniGameDailyLimit) return showToast("আপনি আজকের মিনি গেমের সীমা অতিক্রম করেছেন।", "error"); document.getElementById('game-start-view').style.display = 'block'; document.getElementById('game-play-view').style.display = 'none'; document.getElementById('game-time-info').textContent = appConfig.miniGameTime; document.getElementById('game-clicks-info').textContent = appConfig.miniGameClicks; document.getElementById('mini-game-modal').style.display = 'block'; document.getElementById('mini-game-modal-overlay').style.display = 'block'; }
+    function startGame() { document.getElementById('game-start-view').style.display = 'none'; document.getElementById('game-play-view').style.display = 'block'; clickCount = 0; let timeLeft = appConfig.miniGameTime; document.getElementById('game-timer').textContent = timeLeft; document.getElementById('game-click-counter').textContent = clickCount; miniGameTimer = setInterval(async () => { timeLeft--; document.getElementById('game-timer').textContent = timeLeft; if (timeLeft < 0) { clearInterval(miniGameTimer); await endGame(false); } }, 1000); }
+    async function handleGameClick() { clickCount++; document.getElementById('game-click-counter').textContent = clickCount; if (clickCount >= appConfig.miniGameClicks) { clearInterval(miniGameTimer); await endGame(true); } }
+    async function endGame(isWin) { document.getElementById('mini-game-modal').style.display = 'none'; document.getElementById('mini-game-modal-overlay').style.display = 'none'; const gamesPlayed = (userData.miniGamesPlayed || 0) + 1; await updateDoc(doc(db, "users", currentUser.uid), { miniGamesPlayed: gamesPlayed }); userData.miniGamesPlayed = gamesPlayed; if (isWin) { await updateBalance(appConfig.miniGameReward, 'মিনি গেম পুরস্কার', true); showToast(`অভিনন্দন! আপনি ${appConfig.miniGameReward} কয়েন জিতেছেন।`, 'success'); } else { showToast("দুঃখিত! সময় শেষ। আবার চেষ্টা করুন।", 'error'); } updateUI(); }
+    
+    // --- Ad Handling & Other Features ---
+    function loadAdSdk() { if (document.getElementById('ad-sdk-script')) return; adSdkScript = document.createElement('script'); adSdkScript.id = 'ad-sdk-script'; adSdkScript.src = '//libtl.com/sdk.js'; adSdkScript.defer = true; document.head.appendChild(adSdkScript); }
+    function injectBannerAd() { const adContainer = document.getElementById('banner-ad-container'); if (!adContainer || !appConfig.bannerAdScript) return; adContainer.innerHTML = appConfig.bannerAdScript; }
+    window.claimReward = async function(taskType) { if (userData.dailyAdCount >= appConfig.dailyAdLimit) return showToast("আপনি আজকের দৈনিক সীমা অতিক্রম করেছেন।", "error"); const adZoneId = appConfig.rewardAdZoneId; if (!window[`show_${adZoneId}`]) { return showToast("বিজ্ঞাপন পরিষেবা এখনো প্রস্তুত নয়। অনুগ্রহ করে কয়েক সেকেন্ড পর আবার চেষ্টা করুন।", "error"); } document.getElementById('loader').style.display = 'flex'; try { await window[`show_${adZoneId}`](taskType === 'popup' ? 'pop' : undefined); const newCount = (userData.dailyAdCount || 0) + 1; const rewardMap = { interstitial: appConfig.rewardInterstitial, popup: appConfig.rewardPopup, inApp: appConfig.rewardInApp }; const rewardAmount = rewardMap[taskType]; if (rewardAmount > 0) { await updateBalance(rewardAmount, `${taskType} রিওয়ার্ড`, true); showToast(`অভিনন্দন! আপনি ${rewardAmount} কয়েন জিতেছেন।`, "success"); } await updateDoc(doc(db, "users", currentUser.uid), { dailyAdCount: newCount, lastAdWatchDate: new Date().toISOString().split('T')[0] }); userData.dailyAdCount = newCount; updateAdsLeftCount(); } catch (e) { showToast('বিজ্ঞাপন দেখানো সম্ভব হয়নি।', 'error'); } finally { document.getElementById('loader').style.display = 'none'; } };
+    async function applyReferralBonus(code, isManual = false){ if (isManual) { if (userData.referredBy) return showToast("আপনি ইতি
