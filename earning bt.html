@@ -161,12 +161,8 @@
         <!-- Banner Ad Container -->
         <div id="banner-ad-container" class="sticky top-[65px] z-[9]">
             <!-- Banner Ad script will be injected here by JavaScript -->
-        </div>```
-
----
-
-এটি পার্ট ১। আপনার সুবিধা অনুযায়ী এটি আপনার ফাইলে পেস্ট করে আমাকে জানান। এরপর আমি আপনাকে পার্ট ২ দেব।
-        <main class="flex-grow p-4">
+                                                                                                                        </div>
+                                                                                                                                <main class="flex-grow p-4">
             <!-- Home Page -->
             <div id="home-page" class="space-y-6 sub-page">
                 <div class="card-bg p-5 rounded-xl shadow-lg">
@@ -264,8 +260,8 @@
         </nav>
     </div>
 </body>
-</html>
-<script type="module">
+    </html>
+    <script type="module">
     // --- Ad Network SDK Script ---
     let adSdkScript;
 
@@ -281,32 +277,120 @@
 };
     
     // --- Firebase Imports ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+     কোডের ঠিক নিচেই এই সম্পূর্ণ কোডটি কপি করে পেস্ট করুন। এটি যোগ করার পরই আপনার ইউজার প্যানেলটি সম্পূর্ণভাবে কাজ করা শুরু করবে।
 
-    const app = initializeApp(firebaseConfig);
+---
+
+### **ইউজার প্যানেল: পার্ট ৩ (চূড়ান্তimport { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signIn)**
+
+```html
+<script type="module">
+    // --- Ad Network SDK Script ---
+    let adWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateSdkScript;
+
+    // --- Firebase Configuration ---
+    const firebaseConfig = {
+      apiKey: "AIzaDoc, collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+    constSyDGW23aqYMKAjqBmrYNy6fN8kB8y2aiWR8", app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
     let currentUser = null, userData = null, appConfig = {};
+    let isSpinning // আপনার নিজের Firebase Web API Key ব্যবহার করুন
+      authDomain: "rbots-4f874. = false;
+    let miniGameTimer = null, clickCount = 0;
+
+    // --- App Initialization ---
+    firebaseapp.com",
+      databaseURL: "https://rbots-4f874-default-window.onload = () => {
+        captureReferralCodeFromURL();
+        setupEventListeners();
+        onrtdb.firebaseio.com",
+      projectId: "rbots-4f874",
+      storageAuthStateChanged(auth, handleAuthStateChange);
+    };
+
+    function captureReferralCodeFromURL() {
+        Bucket: "rbots-4f874.appspot.com",
+      messagingSenderId: "217252882686",
+      appId: "1:21725const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) { sessionStorage.setItem('referralCode', refCode.toUpperCase()); }
+2882686:web:e5217da460e04fcb    }
+
+    // --- Core Functions ---
+    async function handleAuthStateChange(user) {
+        if (user) {
+            currentUser = user;
+            document.getElementById('loader').style.display = 'flex';
+            7e9daf"
+    };
+    
+    // --- Firebase Imports ---
+    import { initializeApp }
+            await fetchAppConfig();
+            loadAdSdk(); 
+            await fetchUserData(); 
+            
+            if ( from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.jsuserData && userData.isBlocked) {
+                showToast("আপনার অ্যাকাউন্টটি ব্লক করা হয়েছে।", "error");
+                await signOut(auth);
+                return; 
+            }
+
+            if (userData) {
+                await";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"; checkNewNotifications();
+                updateUI();
+                injectBannerAd();
+                showMainPage('app-container');
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, server
+                navigateTo('home-page');
+            }
+            document.getElementById('loader').style.display = 'Timestamp, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasenone';
+        } else {
+            currentUser = null; userData = null;
+            showMainPage('auth-section');
+            document.getElementById('loader').style.display = 'none';
+        }
+    }js/9.23.0/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    
+    async function fetchAppConfig() {
+        const configRef = doc(db, "config",
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser "main");
+        try {
+            const configSnap = await getDoc(configRef);
+            const defaults = null, userData = null, appConfig = {};
     let isSpinning = false;
     let miniGameTimer = null, clickCount = 0;
 
     // --- App Initialization ---
-    window.onload = () => {
+    window.onload = = { 
+                minWithdrawal: 5000, paymentMethods: ["bKash", "Nagad"], dailyAdLimit: 10, coinValueTaka: 85,
+                welcomeBonus () => {
         captureReferralCodeFromURL();
         setupEventListeners();
-        onAuthStateChanged(auth, handleAuthStateChange);
+        onAuthStateChanged(auth, handle: 50, referralBonusGiver: 100, referralBonusReceiver: 100, AuthStateChange);
     };
 
     function captureReferralCodeFromURL() {
-        const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = new URL
+                dailyCheckInBonus: 20, dailySpins: 1, coinValueCoins: 10SearchParams(window.location.search);
         const refCode = urlParams.get('ref');
-        if (refCode) { sessionStorage.setItem('referralCode', refCode.toUpperCase()); }
+        if00,
+                bannerAdScript: `<script type="text/javascript" src="//ad.a-ads.com/ (refCode) { sessionStorage.setItem('referralCode', refCode.toUpperCase()); }
     }
 
-    // --- Core Functions ---
+    // ---2422789?size=320x50"><\/script>`,
+                rewardAdZone Core Functions ---
     async function handleAuthStateChange(user) {
         if (user) {
             currentUser = user;
@@ -333,44 +417,44 @@
         } else {
             currentUser = null; userData = null;
             showMainPage('auth-section');
-            document.getElementById('loader').style.display = 'none';
-        }
-    }
-    
-    async function fetchAppConfig() {
-        const configRef = doc(db, "config", "main");
-        try {
-            const configSnap = await getDoc(configRef);
-            const defaults = { 
-                minWithdrawal: 5000, paymentMethods: ["bKash", "Nagad"], dailyAdLimit: 10, coinValueTaka: 85,
-                welcomeBonus: 50, referralBonusGiver: 100, referralBonusReceiver: 100, 
-                dailyCheckInBonus: 20, dailySpins: 1, coinValueCoins: 1000,
-                bannerAdScript: `<script type="text/javascript" src="//ad.a-ads.com/2422789?size=320x50"><\/script>`, // Demo Banner Ad
-                rewardAdZoneId: '8690632', // Demo Rewarded Ad ID
+            document.getElementById('loader').styleId: '8690632',
                 spinWheelSectors: [
                     { label: "50", value: 50, color: "#d62828" }, { label: "100", value: 100, color: "#f77f00" },
                     { label: "150", value: 150, color: "#fcbf49" }, { label: "200", value: 200, color: "#003049" },
                     { label: "250", value: 250, color: "#d62828" }, { label: "300", value: 300, color: "#f77f00" },
                     { label: "350", value: 350, color: "#fcbf49" }, { label: "Try Again", value: 0, color: "#003049" }
                 ],
-                rewardInterstitial: 50, rewardPopup: 30, rewardInApp: 10,
-                miniGameReward: 25, miniGameTime: 15, miniGameClicks: 20, miniGameDailyLimit: 3
+                rewardInterstitial: 50, rewardPopup: 30, rewardInApp: 1.display = 'none';
+        }
+    }
+    
+    async function fetchAppConfig() {
+        const configRef = doc(db, "config", "main");
+        try {
+            const configSnap0,
+                miniGameReward: 25, miniGameTime: 15, miniGameClicks: 20 = await getDoc(configRef);
+            const defaults = { 
+                minWithdrawal: 5000,, miniGameDailyLimit: 3
             };
-            appConfig = configSnap.exists() ? { ...defaults, ...configSnap.data() } : defaults;
+            appConfig = configSnap.exists() ? { ...defaults paymentMethods: ["bKash", "Nagad"], dailyAdLimit: 10, coinValueTaka: 8, ...configSnap.data() } : defaults;
         } catch (error) { showToast("অ্যাপ সেটিংস লোড করা যায়নি।", "error"); }
     }
 
     async function fetchUserData() {
-        if (!currentUser) return;
+        if5,
+                welcomeBonus: 50, referralBonusGiver: 100, referralBonusReceiver: 100, 
+                dailyCheckInBonus: 20, dailySpins: 1, coinValueCoins: 1000,
+                bannerAdScript: `<script type="text/javascript" (!currentUser) return;
         const userRef = doc(db, "users", currentUser.uid);
         try {
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
                 userData = userSnap.data();
-                const today = new Date().toISOString().split('T')[0];
+                const today = new Date().toISOString().split('T')[0]; src="//ad.a-ads.com/2422789?size=320x5
                 if(userData.lastAdWatchDate !== today) {
                     await updateDoc(userRef, { dailyAdCount: 0, dailySpinsLeft: appConfig.dailySpins, lastAdWatchDate: today, miniGamesPlayed: 0 });
-                    userData = {...userData, dailyAdCount: 0, dailySpinsLeft: appConfig.dailySpins, lastAdWatchDate: today, miniGamesPlayed: 0};
+                    userData = {...userData, dailyAdCount: 0, dailySp0"><\/script>`, // Demo Banner Ad
+                rewardAdZoneId: '8690632', // DemoinsLeft: appConfig.dailySpins, lastAdWatchDate: today, miniGamesPlayed: 0};
                 }
             } else {
                 const nameFromSignup = sessionStorage.getItem('signupName') || currentUser.email.split('@')[0];
@@ -382,94 +466,141 @@
                     balance: appConfig.welcomeBonus, referralCode: ownReferralCode, referredBy: referredByCode || null,
                     lastNotificationCheck: new Date(), createdAt: serverTimestamp(), dailyAdCount: 0, 
                     lastAdWatchDate: new Date().toISOString().split('T')[0], isBlocked: false,
-                    lastCheckInDate: '1970-01-01', dailySpinsLeft: appConfig.dailySpins, miniGamesPlayed: 0
+                    lastCheckInDate: '1970-01-01', dailySpinsLeft Rewarded Ad ID from libtl.com
+                spinWheelSectors: [
+                    { label: "50", value: 50, color: "#d62828" }, { label: "100", value: 100, color: "#f77f00" },
+                    { label: "150", value: 150, color: "#fcbf49" }, { label: "200", value: 200, color: "#003049" },
+                    { label: "250", value: 250, color: "#d62828" }, { label: "300", value: 300, color: "#f77f00" },
+                    { label: "350", value: 350, color: "#fcbf49" }, { label: "Try Again", value: 0, color: "#003049" }
+                ],
+                rewardInterstitial: 50, rewardPopup: 30, rewardInApp: 10,
+                miniGameReward: 25, miniGameTime: 15, mini: appConfig.dailySpins, miniGamesPlayed: 0
                 };
-                await setDoc(userRef, defaultUserData);
+                await setDoc(userGameClicks: 20, miniGameDailyLimit: 3
+            };
+            appConfig = configSnap.existsRef, defaultUserData);
                 userData = defaultUserData;
-                await logTransaction(`স্বাগতম বোনাস`, appConfig.welcomeBonus, 'credit');
+                await logTransaction(`স্বাগতম বোনাস`, app() ? { ...defaults, ...configSnap.data() } : defaults;
+        } catch (error) {Config.welcomeBonus, 'credit');
                 if (referredByCode) {
                     await applyReferralBonus(referredByCode);
                     sessionStorage.removeItem('referralCode');
                 }
             }
-        } catch (error) { console.error(error); showToast("ব্যবহারকারীর তথ্য লোড করতে সমস্যা হয়েছে।", "error"); }
+         showToast("অ্যাপ সেটিংস লোড করা যায়নি।", "error"); }
+    }
+
+    async function fetch} catch (error) { console.error(error); showToast("ব্যবহারকারীর তথ্য লোড করতে সমস্যা হয়েছে।",UserData() {
+        if (!currentUser) return;
+        const userRef = doc(db, "users", currentUser "error"); }
     }
 
     // --- UI Update and Rendering ---
     function updateUI() {
-        if (!userData || !appConfig) return;
+        if.uid);
+        try {
+            const userSnap = await getDoc(userRef);
+            if (userSnap (!userData || !appConfig) return;
         document.getElementById('coin-balance').textContent = userData.balance || 0;
-        document.getElementById('wallet-coin-balance').textContent = userData.balance || 0;
+        document.getElementById('wallet-coin-balance').textContent = userData.balance || 0;.exists()) {
+                userData = userSnap.data();
+                const today = new Date().toISOString().split('T')[0];
+                if(userData.lastAdWatchDate !== today) {
+                    await updateDoc(userRef, {
         document.getElementById('spin-modal-coin-balance').textContent = userData.balance || 0;
-        document.getElementById('profile-name').textContent = userData.name || 'N/A';
-        document.getElementById('profile-email').textContent = userData.email || 'N/A';
-        document.getElementById('referral-code').textContent = userData.referralCode || 'N/A';
-        document.getElementById('min-withdrawal-info').textContent = `${appConfig.minWithdrawal} Coins`;
-        document.getElementById('coin-value-info').textContent = `${appConfig.coinValueCoins} Coins = ৳${appConfig.coinValueTaka}`;
-        document.getElementById('referral-bonus-info').textContent = `${appConfig.referralBonusGiver} Coins`;
-        document.getElementById('withdraw-method').innerHTML = (appConfig.paymentMethods || []).map(method => `<option value="${method}">${method}</option>`).join('');
+         dailyAdCount: 0, dailySpinsLeft: appConfig.dailySpins, lastAdWatchDate:document.getElementById('profile-name').textContent = userData.name || 'N/A';
+        document.getElementById('profile- today, miniGamesPlayed: 0 });
+                    userData = {...userData, dailyAdCount: 0, dailySpemail').textContent = userData.email || 'N/A';
+        document.getElementById('referral-code').textContent =insLeft: appConfig.dailySpins, lastAdWatchDate: today, miniGamesPlayed: 0};
+                } userData.referralCode || 'N/A';
+        document.getElementById('min-withdrawal-info').textContent = `${
+            } else {
+                const nameFromSignup = sessionStorage.getItem('signupName') || currentUser.email.splitappConfig.minWithdrawal} Coins`;
+        document.getElementById('coin-value-info').textContent = `${appConfig('@')[0];
+                sessionStorage.removeItem('signupName');
+                const ownReferralCode = Math.random()..coinValueCoins} Coins = ৳${appConfig.coinValueTaka}`;
+        document.getElementById('referraltoString(36).substring(2, 8).toUpperCase();
+                const referredByCode = sessionStorage.getItem('refer-bonus-info').textContent = `${appConfig.referralBonusGiver} Coins`;
+        document.getElementById('withdrawralCode');
+                const defaultUserData = {
+                    uid: currentUser.uid, name: nameFromSignup, email-method').innerHTML = (appConfig.paymentMethods || []).map(method => `<option value="${method}">${method}</option>`).join('');
         updateDailyCheckInUI();
-        document.getElementById('spins-left-count').textContent = userData.dailySpinsLeft ?? appConfig.dailySpins;
-        document.getElementById('games-left-count').textContent = (appConfig.miniGameDailyLimit - (userData.miniGamesPlayed || 0));
+        document.getElementById('spins-: currentUser.email,
+                    balance: appConfig.welcomeBonus, referralCode: ownReferralCode, referredBy:left-count').textContent = userData.dailySpinsLeft ?? appConfig.dailySpins;
+        document.getElementById referredByCode || null,
+                    lastNotificationCheck: new Date(), createdAt: serverTimestamp(), dailyAdCount:('games-left-count').textContent = (appConfig.miniGameDailyLimit - (userData.miniGamesPlayed || 0, 
+                    lastAdWatchDate: new Date().toISOString().split('T')[0], isBlocked: false 0));
         updateDynamicPaymentFields();
         updateAdsLeftCount();
         loadRecentActivity();
+        render,
+                    lastCheckInDate: '1970-01-01', dailySpinsLeftTaskList();
+        lucide.createIcons();
+    }
+    
+    function setupEventListeners(){ 
+        document: appConfig.dailySpins, miniGamesPlayed: 0
+                };
+                await setDoc(user.getElementById('show-signup').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('Ref, defaultUserData);
+                userData = defaultUserData;
+                await logTransaction(`স্বাগতম বোনাস`, applogin-view').classList.add('hidden'); document.getElementById('signup-view').classList.remove('hidden'); });Config.welcomeBonus, 'credit');
+                if (referredByCode) {
+                    await applyReferralBonus 
+        document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('signup-view').classList.add('hidden'); document.getElementById('login-view').classList.(referredByCode);
+                    sessionStorage.removeItem('referralCode');
+                }
+            }
+        remove('hidden'); }); 
+        document.getElementById('signup-btn').addEventListener('click', handleSignup); 
+        document.getElementById('login-btn').addEventListener('click', handleLogin); 
+        document.querySelectorAll('.nav-link').forEach} catch (error) { console.error(error); showToast("ব্যবহারকারীর তথ্য লোড করতে সমস্যা হয়েছে।", "error"); }
+    }
+
+    // --- UI Update and Rendering ---
+    function updateUI() {
+        if(link => link.addEventListener('click', (e) => { e.preventDefault(); navigateTo(link.dataset. (!userData || !appConfig) return;
+        document.getElementById('coin-balance').textContent = userData.balancepage); })); 
+        document.body.addEventListener('click', (e) => {
+            if (e.target. || 0;
+        document.getElementById('wallet-coin-balance').textContent = userData.balance || 0;closest('#logout-btn')) handleLogout();
+            if (e.target.closest('#notification-bell')) navigate
+        document.getElementById('spin-modal-coin-balance').textContent = userData.balance || 0;
+To('notifications-page');
+            if (e.target.closest('#daily-check-in-btn')) handle        document.getElementById('profile-name').textContent = userData.name || 'N/A';
+        document.getElementById('profile-email').textContent = userData.email || 'N/A';
+        document.getElementById('referDailyCheckIn();
+            if (e.target.closest('#show-spin-wheel-btn')) showSpinWheel();
+            if (e.target.closest('#close-spin-modal-btn') || e.target.id === 'ral-code').textContent = userData.referralCode || 'N/A';
+        document.getElementById('minspin-wheel-modal-overlay') { document.getElementById('spin-wheel-modal').style.display = 'none'; document.getElementById('spin-wheel-modal-overlay').style.display = 'none'; }
+            if (-withdrawal-info').textContent = `${appConfig.minWithdrawal} Coins`;
+        document.getElementById('coine.target.closest('#spin-now-btn')) handleSpin();
+            if (e.target.closest('#show--value-info').textContent = `${appConfig.coinValueCoins} Coins = ৳${appConfig.coinValueTmini-game-btn')) showMiniGame();
+            if (e.target.closest('#close-game-modal-btnaka}`;
+        document.getElementById('referral-bonus-info').textContent = `${appConfig.referralBonusGiver') || e.target.id === 'mini-game-modal-overlay') { document.getElementById('mini-game-modal} Coins`;
+        document.getElementById('withdraw-method').innerHTML = (appConfig.paymentMethods || []).').style.display = 'none'; document.getElementById('mini-game-modal-overlay').style.display =map(method => `<option value="${method}">${method}</option>`).join('');
+        updateDailyCheckInUI 'none'; }
+            if (e.target.closest('#start-game-btn')) startGame();
+            if (e.target.closest('#mini-game-button')) handleGameClick();
+            if (e.target.closest('#();
+        document.getElementById('spins-left-count').textContent = userData.dailySpinsLeft ?? appConfig.dailycopy-code-btn')) copyReferralCode();
+            if (e.target.closest('#share-btnSpins;
+        document.getElementById('games-left-count').textContent = (appConfig.miniGameDailyLimit -')) shareReferralLink();
+            if (e.target.closest('#withdraw-btn')) handleWithdrawal();
+ (userData.miniGamesPlayed || 0));
+        updateDynamicPaymentFields();
+        updateAdsLeftCount();
+            if (e.target.closest('#home-withdraw-btn')) navigateTo('wallet-page');
+            if (e        loadRecentActivity();
         renderTaskList();
         lucide.createIcons();
     }
     
     function setupEventListeners(){ 
-        document.getElementById('show-signup').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('login-view').classList.add('hidden'); document.getElementById('signup-view').classList.remove('hidden'); }); 
-        document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('signup-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); }); 
-        document.getElementById('signup-btn').addEventListener('click', handleSignup); 
-        document.getElementById('login-btn').addEventListener('click', handleLogin); 
-        document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); navigateTo(link.dataset.page); })); 
-        document.body.addEventListener('click', (e) => {
-            if (e.target.closest('#logout-btn')) handleLogout();
-            if (e.target.closest('#notification-bell')) navigateTo('notifications-page');
-            if (e.target.closest('#daily-check-in-btn')) handleDailyCheckIn();
-            if (e.target.closest('#show-spin-wheel-btn')) showSpinWheel();
-            if (e.target.closest('#close-spin-modal-btn') || e.target.id === 'spin-wheel-modal-overlay') { document.getElementById('spin-wheel-modal').style.display = 'none'; document.getElementById('spin-wheel-modal-overlay').style.display = 'none'; }
-            if (e.target.closest('#spin-now-btn')) handleSpin();
-            if (e.target.closest('#show-mini-game-btn')) showMiniGame();
-            if (e.target.closest('#close-game-modal-btn') || e.target.id === 'mini-game-modal-overlay') { document.getElementById('mini-game-modal').style.display = 'none'; document.getElementById('mini-game-modal-overlay').style.display = 'none'; }
-            if (e.target.closest('#start-game-btn')) startGame();
-            if (e.target.closest('#mini-game-button')) handleGameClick();
-            if (e.target.closest('#copy-code-btn')) copyReferralCode();
-            if (e.target.closest('#share-btn')) shareReferralLink();
-            if (e.target.closest('#withdraw-btn')) handleWithdrawal();
-            if (e.target.closest('#home-withdraw-btn')) navigateTo('wallet-page');
-            if (e.target.closest('#apply-referral-btn')) { const code = document.getElementById('enter-referral-code').value; applyReferralBonus(code, true); }
+        document.getElementById('show-signup').addEventListener('click', (e) => {.target.closest('#apply-referral-btn')) { const code = document.getElementById('enter-referral-code').value; applyReferralBonus(code, true); }
             if (e.target.closest('#close-result-modal-btn')) { document.getElementById('resultModal').style.display = 'none'; }
-        });
+ e.preventDefault(); document.getElementById('login-view').classList.add('hidden'); document.getElementById('signup-view').classList        });
         document.body.addEventListener('change', (e) => { if (e.target.closest('#withdraw-method')) updateDynamicPaymentFields(); });
     }
 
-    window.navigateTo = function(pageId){ if (!document.getElementById(pageId)) return; document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); document.querySelectorAll('.nav-link').forEach(link => link.classList.toggle('active', link.dataset.page === pageId)); if (pageId === 'wallet-page') loadWithdrawalHistory(); if (pageId === 'notifications-page') loadNotifications(); }
-    
-    // --- Authentication Handlers ---
-    async function handleSignup(){ const name = document.getElementById('signup-name').value, email = document.getElementById('signup-email').value, password = document.getElementById('signup-password').value; if (!name || !email || !password) return showToast("অনুগ্রহ করে সব ঘর পূরণ করুন।", "error"); document.getElementById('loader').style.display = 'flex'; sessionStorage.setItem('signupName', name); try { await createUserWithEmailAndPassword(auth, email, password); } catch (error) { showToast(error.code === 'auth/email-already-in-use' ? 'এই ইমেইল দিয়ে ইতিমধ্যে অ্যাকাউন্ট আছে।': 'একটি সমস্যা হয়েছে, আবার চেষ্টা করুন।', "error"); document.getElementById('loader').style.display = 'none'; } }
-    async function handleLogin(){ const email = document.getElementById('login-email').value, password = document.getElementById('login-password').value; if (!email || !password) return showToast("অনুগ্রহ করে ইমেইল এবং পাসওয়ার্ড দিন।", "error"); document.getElementById('loader').style.display = 'flex'; try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { showToast("ভুল ইমেইল অথবা পাসওয়ার্ড।", "error"); document.getElementById('loader').style.display = 'none'; } }
-    async function handleLogout(){ await signOut(auth); showToast("সফলভাবে লগআউট করা হয়েছে।", "success"); }
-
-    // --- Core Features ---
-    function updateDailyCheckInUI(){ const btn = document.getElementById('daily-check-in-btn'); if (!btn) return; const today = new Date().toISOString().split('T')[0]; if(userData.lastCheckInDate === today){btn.textContent = 'আজকের বোনাস নেওয়া হয়েছে'; btn.disabled = true;}else{btn.textContent = `Claim +${appConfig.dailyCheckInBonus}`; btn.disabled = false;} }
-    async function handleDailyCheckIn(){ const today = new Date().toISOString().split('T')[0]; if (userData.lastCheckInDate === today) return showToast("আপনি আজকের বোনাস নিয়ে নিয়েছেন।", "error"); const btn = document.getElementById('daily-check-in-btn'); btn.disabled = true; await updateBalance(appConfig.dailyCheckInBonus, 'দৈনিক চেক-ইন বোনাস', true); await updateDoc(doc(db, "users", currentUser.uid), { lastCheckInDate: today }); userData.lastCheckInDate = today; showToast(`অভিনন্দন! আপনি ${appConfig.dailyCheckInBonus} কয়েন পেয়েছেন।`, "success"); updateDailyCheckInUI(); }
-    
-    // --- Spin Wheel Logic ---
-    function showSpinWheel() { document.getElementById('spin-wheel-modal').style.display = 'block'; document.getElementById('spin-wheel-modal-overlay').style.display = 'block'; drawWheel(); }
-    function drawWheel() { const canvas = document.getElementById("spin-wheel-canvas"); const ctx = canvas.getContext("2d"); const sectors = appConfig.spinWheelSectors; const arc = (2 * Math.PI) / sectors.length; ctx.clearRect(0, 0, canvas.width, canvas.height); sectors.forEach((sector, i) => { const startAngle = i * arc - (Math.PI / 2) - (arc / 2); const endAngle = startAngle + arc; ctx.beginPath(); ctx.fillStyle = sector.color; ctx.moveTo(140, 140); ctx.arc(140, 140, 140, startAngle, endAngle); ctx.fill(); ctx.save(); ctx.translate(140, 140); ctx.rotate(startAngle + arc / 2); ctx.textAlign = "right"; ctx.fillStyle = "#fff"; ctx.font = "bold 16px Hind Siliguri"; ctx.fillText(sector.label, 120, 5); ctx.restore(); }); }
-    function handleSpin(){ if (isSpinning) return; if (userData.dailySpinsLeft <= 0) return showToast("আপনার আজকে আর কোনো স্পিন নেই।", "error"); isSpinning = true; document.getElementById('spin-now-btn').disabled = true; const canvas = document.getElementById('spin-wheel-canvas'); canvas.style.transition = 'transform 0s'; canvas.style.transform = `rotate(0deg)`; const sectors = appConfig.spinWheelSectors; const winningSegmentIndex = Math.floor(Math.random() * sectors.length); const segmentAngle = 360 / sectors.length; const stopAtAngle = (360 - (winningSegmentIndex * segmentAngle)) - (segmentAngle / 2); const finalAngle = 360 * 6 + stopAtAngle; setTimeout(() => { canvas.style.transition = 'transform 6s cubic-bezier(0.25, 1, 0.5, 1)'; canvas.style.transform = `rotate(${finalAngle}deg)`; }, 100); userData.dailySpinsLeft -= 1; document.getElementById('spins-left-count').textContent = userData.dailySpinsLeft; updateDoc(doc(db, "users", currentUser.uid), { dailySpinsLeft: userData.dailySpinsLeft }); setTimeout(() => finishSpin(sectors[winningSegmentIndex]), 6100); }
-    async function finishSpin(result) { if (result.value > 0) { await updateBalance(result.value, 'স্পিন হুইল পুরস্কার', true); } document.getElementById("winningAmount").innerText = (result.value > 0) ? `${result.value} Coins!` : "আবার চেষ্টা করুন!"; document.getElementById("resultModal").style.display = "flex"; isSpinning = false; document.getElementById('spin-now-btn').disabled = false; }
-    
-    // --- Mini Game Logic ---
-    function showMiniGame() { if((userData.miniGamesPlayed || 0) >= appConfig.miniGameDailyLimit) return showToast("আপনি আজকের মিনি গেমের সীমা অতিক্রম করেছেন।", "error"); document.getElementById('game-start-view').style.display = 'block'; document.getElementById('game-play-view').style.display = 'none'; document.getElementById('game-time-info').textContent = appConfig.miniGameTime; document.getElementById('game-clicks-info').textContent = appConfig.miniGameClicks; document.getElementById('mini-game-modal').style.display = 'block'; document.getElementById('mini-game-modal-overlay').style.display = 'block'; }
-    function startGame() { document.getElementById('game-start-view').style.display = 'none'; document.getElementById('game-play-view').style.display = 'block'; clickCount = 0; let timeLeft = appConfig.miniGameTime; document.getElementById('game-timer').textContent = timeLeft; document.getElementById('game-click-counter').textContent = clickCount; miniGameTimer = setInterval(async () => { timeLeft--; document.getElementById('game-timer').textContent = timeLeft; if (timeLeft < 0) { clearInterval(miniGameTimer); await endGame(false); } }, 1000); }
-    async function handleGameClick() { clickCount++; document.getElementById('game-click-counter').textContent = clickCount; if (clickCount >= appConfig.miniGameClicks) { clearInterval(miniGameTimer); await endGame(true); } }
-    async function endGame(isWin) { document.getElementById('mini-game-modal').style.display = 'none'; document.getElementById('mini-game-modal-overlay').style.display = 'none'; const gamesPlayed = (userData.miniGamesPlayed || 0) + 1; await updateDoc(doc(db, "users", currentUser.uid), { miniGamesPlayed: gamesPlayed }); userData.miniGamesPlayed = gamesPlayed; if (isWin) { await updateBalance(appConfig.miniGameReward, 'মিনি গেম পুরস্কার', true); showToast(`অভিনন্দন! আপনি ${appConfig.miniGameReward} কয়েন জিতেছেন।`, 'success'); } else { showToast("দুঃখিত! সময় শেষ। আবার চেষ্টা করুন।", 'error'); } updateUI(); }
-    
-    // --- Ad Handling & Other Features ---
-    function loadAdSdk() { if (document.getElementById('ad-sdk-script')) return; adSdkScript = document.createElement('script'); adSdkScript.id = 'ad-sdk-script'; adSdkScript.src = '//libtl.com/sdk.js'; adSdkScript.defer = true; document.head.appendChild(adSdkScript); }
-    function injectBannerAd() { const adContainer = document.getElementById('banner-ad-container'); if (!adContainer || !appConfig.bannerAdScript) return; adContainer.innerHTML = appConfig.bannerAdScript; }
-    window.claimReward = async function(taskType) { if (userData.dailyAdCount >= appConfig.dailyAdLimit) return showToast("আপনি আজকের দৈনিক সীমা অতিক্রম করেছেন।", "error"); const adZoneId = appConfig.rewardAdZoneId; if (!window[`show_${adZoneId}`]) { return showToast("বিজ্ঞাপন পরিষেবা এখনো প্রস্তুত নয়। অনুগ্রহ করে কয়েক সেকেন্ড পর আবার চেষ্টা করুন।", "error"); } document.getElementById('loader').style.display = 'flex'; try { await window[`show_${adZoneId}`](taskType === 'popup' ? 'pop' : undefined); const newCount = (userData.dailyAdCount || 0) + 1; const rewardMap = { interstitial: appConfig.rewardInterstitial, popup: appConfig.rewardPopup, inApp: appConfig.rewardInApp }; const rewardAmount = rewardMap[taskType]; if (rewardAmount > 0) { await updateBalance(rewardAmount, `${taskType} রিওয়ার্ড`, true); showToast(`অভিনন্দন! আপনি ${rewardAmount} কয়েন জিতেছেন।`, "success"); } await updateDoc(doc(db, "users", currentUser.uid), { dailyAdCount: newCount, lastAdWatchDate: new Date().toISOString().split('T')[0] }); userData.dailyAdCount = newCount; updateAdsLeftCount(); } catch (e) { showToast('বিজ্ঞাপন দেখানো সম্ভব হয়নি।', 'error'); } finally { document.getElementById('loader').style.display = 'none'; } };
-    async function applyReferralBonus(code, isManual = false){ if (isManual) { if (userData.referredBy) return showToast("আপনি ইতি
+    window.navigateTo = function(pageId){ if.remove('hidden'); }); 
+        document.getElementById('show-login').addEventListener('click', (e) => { e.preventDefault(); document.getElementById('signup-view').classList.add('hidden'); document.getElementById('login- (!document.getElementById(pageId)) return; docum
