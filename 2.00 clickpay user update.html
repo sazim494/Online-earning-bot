@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>clickpay earning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        :root {
+            --font-family: 'Poppins', sans-serif;
+            --primary-color: #E74C3C;
+            --secondary-color: #F39C12;
+            --gradient-primary: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            --success: #27AE60; --danger: #C0392B; --pending: #F39C12;
+            
+            /* Light Theme */
+            --background-light: #F4F6F9; --surface-light: #FFFFFF; --text-primary-light: #2C3E50; --text-secondary-light: #808B96; --border-light: #EAEDED;
+            /* Dark Theme */
+            --background-dark: #171C2E; --surface-dark: #212940; --text-primary-dark: #FDFEFE; --text-secondary-dark: #A6B0CF; --border-dark: #3A4361;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-family);
+            transition: background-color 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        body.light-theme { background-color: var(--background-light); color: var(--text-primary-light); }
+        body.dark-theme { background-color: var(--background-dark); color: var(--text-primary-dark); }
+        
+        #app { max-width: 500px; margin: 0 auto; padding-bottom: 90px; }
+        .page { display: none; padding: 15px; }
+        .page.active { display: block; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card {
+            padding: 20px; border-radius: 16px; margin-bottom: 20px;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .light-theme .card { background-color: var(--surface-light); border-color: var(--border-light); }
+        .dark-theme .card { background-color: var(--surface-dark); border-color: var(--border-dark); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+
+        .profile-header {
+            padding: 20px; text-align: center; border-radius: 0 0 24px 24px;
+            margin: -15px -15px 0 -15px;
+            background: var(--gradient-primary);
+            color: white;
+        }
+        #user-photo { width: 85px; height: 85px; border-radius: 50%; border: 4px solid white; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        #user-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
+        #user-balance-container { font-size: 1.1rem; font-weight: 500; opacity: 0.9; }
+        #user-balance { font-size: 1.2rem; font-weight: 700; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .stat-card { padding: 15px; border-radius: 12px; text-align: center; }
+        .light-theme .stat-card { background-color: var(--surface-light); } .dark-theme .stat-card { background-color: var(--surface-dark); }
+        .stat-card i { font-size: 1.5rem; margin-bottom: 8px; color: var(--primary-color); }
+        .stat-card h3 { font-size: 0.8rem; font-weight: 500; margin-bottom: 5px; text-transform: uppercase; }
+        .stat-card p { font-size: 1.4rem; font-weight: 600; }
+        .light-theme .stat-card h3 { color: var(--text-secondary-light); } .dark-theme .stat-card h3 { color: var(--text-secondary-dark); }
+        .light-theme .stat-card p { color: var(--text-primary-light); } .dark-theme .stat-card p { color: var(--text-primary-dark); }
+        
+        .chart-container { padding: 20px; border-radius: 12px; }
+        .chart { display: flex; justify-content: space-around; align-items: flex-end; height: 150px; border-left: 1px solid; border-bottom: 1px solid; padding-top: 10px; }
+        .light-theme .chart { border-color: #e0e0e0; } .dark-theme .chart { border-color: var(--border-dark); }
+        .bar { width: 12%; background: var(--gradient-primary); border-radius: 5px 5px 0 0; position: relative; cursor: pointer; transition: transform 0.2s ease; }
+        .bar:hover { transform: scaleY(1.05); }
+        .bar .tooltip { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); background: #2c3e50; color: white; padding: 3px 7px; border-radius: 5px; font-size: 0.8rem; white-space: nowrap; opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 10; }
+        .bar:hover .tooltip { opacity: 1; }
+        .chart-labels { display: flex; justify-content: space-around; font-size: 0.75rem; margin-top: 8px; }
+
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
+        .history-details p:first-child { font-weight: 600; }
+        .history-status { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: white; text-transform: capitalize; }
+        .status-completed { background-color: var(--success); } .status-pending { background-color: var(--pending); } .status-rejected { background-color: var(--danger); }
+
+        .progress-container { margin-bottom: 20px; }
+        .progress-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; }
+        .progress-bar-bg { width: 100%; height: 12px; border-radius: 6px; }
+        .light-theme .progress-bar-bg { background-color: var(--border-light); } .dark-theme .progress-bar-bg { background-color: var(--border-dark); }
+        .progress-bar-fg { height: 100%; border-radius: 6px; background: var(--gradient-primary); transition: width 0.4s ease-in-out; }
+        
+        form label { font-weight: 600; margin-bottom: 8px; display: block; font-size: 0.9rem; }
+        form input, form select, form textarea {
+            width: 100%; padding: 12px; border-radius: 8px; font-family: var(--font-family); font-size: 1rem;
+            transition: all 0.2s ease-in-out; border: 1px solid;
+        }
+        .light-theme form input, .light-theme form select { background: #fdfefe; border-color: var(--border-light); }
+        .dark-theme form input, .dark-theme form select { background: var(--surface-dark); border-color: var(--border-dark); color: var(--text-primary-dark); }
+        form input:focus, form select:focus, form textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2); }
+        .form-group { margin-bottom: 15px; }
+
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(5px); }
+        .popup-content { padding: 30px; border-radius: 15px; text-align: center; max-width: 90%; animation: popup-scale 0.3s ease-out; }
+        @keyframes popup-scale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .light-theme .popup-content { background-color: var(--surface-light); } .dark-theme .popup-content { background-color: var(--surface-dark); }
+        .popup-content h2 { margin-bottom: 15px; color: var(--primary-color); } .popup-content p { margin-bottom: 20px; line-height: 1.6; }
+        .popup-close-btn { padding: 12px 30px; border: none; border-radius: 8px; color: #fff; background: var(--gradient-primary); cursor: pointer; font-weight: 600; }
+        .popup-loader .spinner { width: 40px; height: 40px; border-radius: 50%; border: 4px solid; border-color: var(--primary-color) transparent; animation: spin 1s linear infinite; margin: 0 auto 15px;}
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        #app-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .light-theme #app-loader { background-color: var(--background-light); } .dark-theme #app-loader { background-color: var(--background-dark); }
+        #app-loader .spinner { width: 50px; height: 50px; border-radius: 50%; border: 5px solid; border-color: var(--primary-color) transparent; animation: spin 1s linear infinite; }
+        #loading-progress { margin-top: 15px; font-size: 1.2rem; font-weight: 600; }
+        
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto;
+            display: flex; justify-content: space-around; padding: 10px 0;
+            border-top: 1px solid; z-index: 1000;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        }
+        .light-theme .bottom-nav { background-color: var(--surface-light); border-top-color: var(--border-light); }
+        .dark-theme .bottom-nav { background-color: var(--surface-dark); border-top-color: var(--border-dark); }
+        .nav-btn { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; font-family: var(--font-family); font-size: 0.75rem; transition: all 0.2s ease; flex-grow: 1; }
+        .light-theme .nav-btn { color: var(--text-secondary-light); } .dark-theme .nav-btn { color: var(--text-secondary-dark); }
+        .nav-btn i { font-size: 1.6rem; margin-bottom: 4px; transition: transform 0.2s ease; }
+        .nav-btn.active { color: var(--primary-color); } .nav-btn.active i { transform: scale(1.1); }
+        
+        .task-container {
+            padding: 15px; border-radius: 12px; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .task-icon-img { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+        .task-info h3 { font-size: 1.1rem; font-weight: 600; } .task-info p { font-size: 0.85rem; opacity: 0.8; }
+        .action-btn {
+            padding: 10px 20px; font-size: 0.9rem; font-weight: 600; color: #fff;
+            border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s;
+            background: var(--gradient-primary); margin-left: auto; white-space: nowrap; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(231, 76, 60, 0.4); }
+        .action-btn:disabled { background: #808B96; cursor: not-allowed; box-shadow: none; }
+        
+        .leaderboard-toggle { display: flex; justify-content: center; margin-bottom: 20px; border-radius: 10px; padding: 5px; }
+        .light-theme .leaderboard-toggle { background-color: #e9ecef; } .dark-theme .leaderboard-toggle { background-color: #2c3e50; }
+        .toggle-btn { padding: 10px 20px; border: none; background: none; font-size: 1rem; font-weight: 500; cursor: pointer; border-radius: 8px; flex-grow: 1; transition: all 0.3s ease; }
+        .light-theme .toggle-btn { color: var(--text-secondary-light); } .dark-theme .toggle-btn { color: var(--text-secondary-dark); }
+        .toggle-btn.active { font-weight: 700; color: #fff; background: var(--gradient-primary); box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); }
+        
+        .leaderboard-list { list-style: none; }
+        .leaderboard-item { display: flex; align-items: center; padding: 12px; margin-bottom: 10px; border-radius: 10px; }
+        .rank { font-size: 1.2rem; font-weight: 700; color: var(--primary-color); width: 40px; }
+        .leaderboard-item img { width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
+        .leaderboard-name { font-weight: 600; flex-grow: 1; } .leaderboard-score { font-weight: 600; color: var(--primary-color); }
+
+        /* --- NEW CAPTCHA STYLES --- */
+        #captcha-container {
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+        }
+        #captcha-canvas {
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .light-theme #captcha-canvas { border: 1px solid var(--border-light); }
+        .dark-theme #captcha-canvas { border: 1px solid var(--border-dark); }
+        #captcha-input {
+            text-align: center; font-size: 1.5rem; letter-spacing: 5px;
+            padding: 15px; border-radius: 10px;
+        }
+        #captcha-info {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="app-loader"><div class="spinner"></div><p id="loading-progress">0%</p></div>
+    <div id="popup" class="popup-overlay"><div class="popup-content"><div id="popup-body"></div></div></div>
+    <div id="app" style="display: none;">
+        <header class="profile-header">
+            <img id="user-photo" src="https://via.placeholder.com/85" alt="User">
+            <h1 id="user-name">Loading...</h1>
+            <div id="user-balance-container">Main Balance: <span id="user-balance">0.00</span> TK</div>
+        </header>
+        <main id="main-content">
+            <div id="home-page" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card"><i class="fas fa-eye"></i><h3>Today's Ads</h3><p id="daily-ads-watched">0 / 0</p></div>
+                    <div class="stat-card"><i class="fas fa-users"></i><h3>Referrals</h3><p id="referral-count">0</p></div>
+                    <div class="stat-card"><i class="fas fa-chart-line"></i><h3>Total Ads</h3><p id="total-ads-watched">0</p></div>
+                    <div class="stat-card"><i class="fas fa-wallet"></i><h3>Total Income</h3><p id="total-earned">0.00</p></div>
+                </div>
+                <div id="earnings-graph-container" class="card">
+                    <h3>Last 7 Days Earnings</h3>
+                    <div id="earnings-chart" class="chart"></div><div id="earnings-chart-labels" class="chart-labels"></div>
+                </div>
+                <div id="dynamic-links-container"></div>
+            </div>
+            <div id="tasks-page" class="page">
+                <div class="card">
+                    <h3>Earning Wallet</h3>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--primary-color); margin: 10px 0;"><span id="earning-wallet-balance">0.00</span> TK</p>
+                    <small>Minimum 10 TK to move to main balance.</small>
+                    <button id="move-to-balance-btn" class="action-btn" style="width:100%; margin-top: 15px;" disabled>Move to Main Balance</button>
+                </div>
+                <div id="ad-progress-container" class="progress-container"></div>
+                <div id="ad-task-container"></div>
+                <h2>Bonus Tasks</h2><div id="dynamic-tasks-container"></div>
+            </div>
+             <!-- NEW CAPTCHA PAGE -->
+            <div id="captcha-page" class="page">
+                <h2>Solve Captcha & Earn</h2>
+                <div class="card" id="captcha-card">
+                     <p id="captcha-info">Loading captcha details...</p>
+                     <div id="captcha-container" style="display: none;">
+                        <canvas id="captcha-canvas" width="200" height="70"></canvas>
+                        <input type="text" id="captcha-input" placeholder="Enter text" maxlength="6" autocomplete="off">
+                        <button id="captcha-submit-btn" class="action-btn" style="width:100%;">Submit</button>
+                    </div>
+                </div>
+            </div>
+            <div id="leaderboard-page" class="page">
+                <h2>Leaderboard</h2>
+                <div class="leaderboard-toggle">
+                    <button class="toggle-btn active" data-board="referral">Top Referrers</button>
+                    <button class="toggle-btn" data-board="earning">Top Earners</button>
+                </div>
+                <div id="referral-board"><ul class="leaderboard-list" id="referral-leaderboard-list"></ul></div>
+                <div id="earning-board" style="display: none;"><ul class="leaderboard-list" id="earning-leaderboard-list"></ul></div>
+            </div>
+            <div id="profile-page" class="page">
+                <div id="referral-section"></div>
+                <div id="withdraw-section"></div>
+                <div id="withdrawal-history-section" class="card">
+                    <h2>Withdrawal History</h2>
+                    <div id="withdrawal-history-list"></div>
+                </div>
+            </div>
+        </main>
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-page="home-page"><i class="fas fa-home"></i><span>Home</span></button>
+            <button class="nav-btn" data-page="tasks-page"><i class="fas fa-tasks"></i><span>Tasks</span></button>
+            <!-- NEW CAPTCHA BUTTON -->
+            <button class="nav-btn" data-page="captcha-page"><i class="fas fa-keyboard"></i><span>Captcha</span></button>
+            <button class="nav-btn" data-page="leaderboard-page"><i class="fas fa-trophy"></i><span>Leaderboard</span></button>
+            <button class="nav-btn" data-page="profile-page"><i class="fas fa-user-alt"></i><span>Profile</span></button>
+        </nav>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tg = window.Telegram.WebApp;
+        const firebaseConfig = {
+            apiKey: "AIzaSyBgByoyPhIaSnHpUt2CXpoyZ2hjtdcOvJg",
+            authDomain: "clickpay-earning-bot.firebaseapp.com",
+            databaseURL: "https://clickpay-earning-bot-default-rtdb.firebaseio.com",
+            projectId: "clickpay-earning-bot",
+            storageBucket: "clickpay-earning-bot.firebasestorage.app",
+            messagingSenderId: "814373698803",
+            appId: "1:814373698803:web:de0cbd0327f9cb35c30b86",
+            measurementId: "G-EJ4VFH4H35"
+        };
+        
+        let appConfig = {}; let userState = {}; let tgUser = {}; let earningWalletBalance = 0;
+        let leaderboardData = { referral: [], earning: [] };
+        let userTransactions = [];
+        let currentCaptchaText = ''; // Variable to hold the correct captcha text
+
+        const popup = document.getElementById('popup');
+        const popupBody = document.getElementById('popup-body');
+        const loadingProgress = document.getElementById('loading-progress');
+
+        const showPopup = (content) => { popupBody.innerHTML = content; popup.style.display = 'flex'; };
+        const closePopup = () => { popup.style.display = 'none'; };
+        const updateProgress = (percentage) => { loadingProgress.textContent = `${percentage}%`; };
+
+        const loadAdSdk = (zoneId) => {
+            if (!zoneId) { console.error("Ad Zone ID is missing from Firebase config!"); return; }
+            if (document.querySelector(`script[data-zone='${zoneId}']`)) return;
+            const script = document.createElement('script');
+            script.src = `//libtl.com/sdk.js`;
+            script.setAttribute('data-zone', zoneId);
+            script.setAttribute('data-sdk', `show_${zoneId}`);
+            script.async = true;
+            document.body.appendChild(script);
+        };
+        
+        const showAd = async (source) => {
+             const adFunction = window['show_' + appConfig.adZoneId];
+            if (typeof adFunction !== 'function') {
+                const message = "Ad network is not ready yet. Please wait a few seconds and try again.";
+                tg.showAlert(message);
+                throw new Error(message); // Throw error to stop further execution
+            }
+             showPopup(`<div class="popup-loader"><div class="spinner"></div></div><h2>Loading Ad</h2><p>Please wait a moment...</p>`);
+             try {
+                await adFunction();
+                closePopup();
+                return true; // Ad shown successfully
+             } catch (error) {
+                console.error(`Ad failed to load from source: ${source}`, error);
+                closePopup();
+                tg.showAlert("Ad could not be loaded. Please try again.");
+                return false; // Ad failed
+             }
+        };
+
+        const initApp = async () => {
+            tg.ready(); tg.expand();
+            document.body.className = `${tg.colorScheme}-theme`;
+            tgUser = tg.initDataUnsafe.user;
+            if (!tgUser || !tgUser.id) { tg.showAlert("User data not found.", () => tg.close()); return; }
+
+            try {
+                updateProgress(10); firebase.initializeApp(firebaseConfig); const db = firebase.database();
+                updateProgress(20);
+                
+                const configSnapshot = await db.ref('config').once('value');
+                appConfig = configSnapshot.val() || {};
+                updateProgress(40);
+
+                await loadUserData(db);
+                updateProgress(60);
+
+                const referralBoardPromise = db.ref('users').orderByChild('referrals').limitToLast(10).once('value');
+                const earningBoardPromise = db.ref('users').orderByChild('totalEarned').limitToLast(10).once('value');
+                const historyPromise = loadTransactionHistory(db);
+
+                const [referralBoardSnap, earningBoardSnap] = await Promise.all([referralBoardPromise, earningBoardPromise, historyPromise]);
+                updateProgress(80);
+
+                referralBoardSnap.forEach(child => { leaderboardData.referral.push(child.val()); });
+                earningBoardSnap.forEach(child => { leaderboardData.earning.push(child.val()); });
+                leaderboardData.referral.reverse(); leaderboardData.earning.reverse();
+                updateProgress(90);
+
+                loadAdSdk(appConfig.adZoneId);
+                earningWalletBalance = parseFloat(localStorage.getItem(`earningWallet_${tgUser.id}`) || '0');
+                
+                renderUI(); setupNavigation(); setupEventListeners();
+                updateProgress(100);
+
+                setTimeout(() => {
+                    document.getElementById('app-loader').style.display = 'none';
+                    document.getElementById('app').style.display = 'block';
+                    if (appConfig.welcomeMessage && !userState.welcomed) {
+                        showPopup(`<h2>Welcome!</h2><p>${appConfig.welcomeMessage}</p><button class="popup-close-btn">Continue</button>`);
+                        db.ref(`users/${tgUser.id}/welcomed`).set(true);
+                    }
+                }, 300);
+            } catch (error) { console.error("Initialization failed:", error); tg.showAlert("Failed to load app data. Please try again."); }
+        };
+
+        const loadUserData = async (db) => {
+            const userRef = db.ref(`users/${tgUser.id}`);
+            const snapshot = await userRef.once('value');
+            let userData = snapshot.val();
+            
+            if (!userData) {
+                const startParam = tg.initDataUnsafe.start_param;
+                const referralId = (startParam && !isNaN(startParam)) ? startParam : null;
+                
+                userData = { id: tgUser.id, firstName: tgUser.first_name || '', lastName: tgUser.last_name || '', username: tgUser.username || '', photoUrl: tgUser.photo_url || '', balance: 0, referrals: 0, referredBy: referralId, totalEarned: 0, lifetimeAdCount: 0, lastAdWatchDate: '1970-01-01', dailyAdCount: 0, breakUntil: 0, completedTasks: {}, welcomed: false, lastCaptchaDate: '1970-01-01', dailyCaptchaCount: 0 }; // Added captcha fields
+                await userRef.set(userData);
+                
+                if (referralId && referralId != tgUser.id) {
+                    const referrerRef = db.ref(`users/${referralId}`);
+                    const bonusAmount = parseFloat(appConfig.referralBonus || 0);
+                    try {
+                        const referrerSnap = await referrerRef.once('value');
+                        if (referrerSnap.exists()) {
+                            await referrerRef.child('referrals').set(firebase.database.ServerValue.increment(1));
+                            if (bonusAmount > 0) {
+                                await referrerRef.child('balance').set(firebase.database.ServerValue.increment(bonusAmount));
+                            }
+                        }
+                    } catch (error) { console.error("Failed to credit referrer:", error); }
+                }
+            }
+            
+            const today = new Date().toISOString().slice(0, 10);
+            const updates = {};
+            if (userData.lastAdWatchDate !== today) {
+                updates.dailyAdCount = 0; updates.lastAdWatchDate = today;
+            }
+             if (userData.lastCaptchaDate !== today) { // Reset captcha count daily
+                updates.dailyCaptchaCount = 0; updates.lastCaptchaDate = today;
+            }
+            if(Object.keys(updates).length > 0) {
+                 await userRef.update(updates);
+                 userData = {...userData, ...updates};
+            }
+            userState = userData;
+        };
+        
+        const loadTransactionHistory = async (db) => {
+            userTransactions = [];
+            const statuses = ['pending', 'completed', 'rejected'];
+            const historyPromises = statuses.map(status => db.ref(`withdrawals/${status}`).orderByChild('userId').equalTo(tgUser.id).once('value'));
+            const snapshots = await Promise.all(historyPromises);
+            snapshots.forEach(snap => { snap.forEach(childSnap => { userTransactions.push(childSnap.val()); }); });
+            userTransactions.sort((a, b) => b.timestamp - a.timestamp);
+        };
+        
+        const renderUI = () => {
+            document.getElementById('user-photo').src = userState.photoUrl || 'https://via.placeholder.com/85';
+            document.getElementById('user-name').textContent = `${userState.firstName} ${userState.lastName}`;
+            document.getElementById('user-balance').textContent = (userState.balance || 0).toFixed(2);
+            document.getElementById('daily-ads-watched').textContent = `${userState.dailyAdCount || 0} / ${appConfig.dailyAdLimit || 0}`;
+            document.getElementById('referral-count').textContent = userState.referrals || 0;
+            document.getElementById('total-ads-watched').textContent = userState.lifetimeAdCount || 0;
+            document.getElementById('total-earned').textContent = (userState.totalEarned || 0).toFixed(2);
+            document.getElementById('earning-wallet-balance').textContent = earningWalletBalance.toFixed(2);
+            document.getElementById('move-to-balance-btn').disabled = earningWalletBalance < 10;
+            renderAdTask(); renderAdProgress(); renderDynamicTasks(); renderReferralSection(); renderWithdrawSection(); renderEarningsGraph(); renderDynamicLinks();
+        };
+        
+        const renderAdProgress = () => {
+            const container = document.getElementById('ad-progress-container');
+            const dailyLimit = appConfig.dailyAdLimit || 1;
+            const watchedCount = userState.dailyAdCount || 0;
+            const percentage = (watchedCount / dailyLimit) * 100;
+            container.innerHTML = `<div class="progress-info"><span>Daily Ad Progress</span><span>${watchedCount} / ${dailyLimit}</span></div><div class="progress-bar-bg"><div class="progress-bar-fg" style="width: ${percentage}%;"></div></div>`;
+        };
+        
+        const renderEarningsGraph = async () => {
+             const chartEl = document.getElementById('earnings-chart'); const labelsEl = document.getElementById('earnings-chart-labels');
+            chartEl.innerHTML = ''; labelsEl.innerHTML = '';
+            const today = new Date(); const dates = [];
+            for (let i = 6; i >= 0; i--) { const date = new Date(today); date.setDate(today.getDate() - i); dates.push(date.toISOString().slice(0, 10)); }
+            const earningsPromises = dates.map(date => firebase.database().ref(`userEarnings/${tgUser.id}/${date}`).once('value'));
+            const snapshots = await Promise.all(earningsPromises);
+            const earningsData = snapshots.map(snap => snap.val() || 0);
+            const maxEarning = Math.max(...earningsData, 1);
+            earningsData.forEach((earning, index) => {
+                const height = (earning / maxEarning) * 100;
+                const dateLabel = new Date(dates[index]).toLocaleDateString('en-US', { day: 'numeric' });
+                chartEl.innerHTML += `<div class="bar" style="height: ${height}%;"><span class="tooltip">${earning.toFixed(2)} TK</span></div>`;
+                labelsEl.innerHTML += `<span>${dateLabel}</span>`;
+            });
+        };
+        
+        const handleWatchAd = async () => {
+            if (userState.dailyAdCount >= appConfig.dailyAdLimit) { tg.showAlert("You have reached your daily ad watch limit."); return; }
+            const now = Date.now();
+            if (userState.breakUntil && now < userState.breakUntil) {
+                const remaining = Math.ceil((userState.breakUntil - now) / 60000);
+                tg.showAlert(`Please wait for ${remaining} more minutes.`); return;
+            }
+            
+            const adShown = await showAd('watch_ad');
+            if (!adShown) return;
+            
+            try {
+                const adValue = appConfig.adValue || 0;
+                earningWalletBalance += adValue;
+                localStorage.setItem(`earningWallet_${tgUser.id}`, earningWalletBalance.toString());
+                userState.dailyAdCount++; userState.lifetimeAdCount++; userState.totalEarned += adValue;
+
+                const db = firebase.database(); const userRef = db.ref(`users/${tgUser.id}`);
+                const updates = {};
+                updates.dailyAdCount = userState.dailyAdCount;
+                updates.lifetimeAdCount = userState.lifetimeAdCount;
+                updates.totalEarned = userState.totalEarned;
+                if ((userState.dailyAdCount) % appConfig.adsPerBreak === 0 && appConfig.adsPerBreak > 0) {
+                    updates.breakUntil = Date.now() + (appConfig.breakDuration * 60000);
+                    userState.breakUntil = updates.breakUntil;
+                }
+                await userRef.update(updates);
+                
+                const today = new Date().toISOString().slice(0, 10);
+                await db.ref(`userEarnings/${tgUser.id}/${today}`).set(firebase.database.ServerValue.increment(adValue));
+                tg.HapticFeedback.notificationOccurred('success');
+                tg.showAlert(`+${adValue.toFixed(2)} TK added to your Earning Wallet.`);
+                renderUI();
+            } catch (error) {
+                console.error("Failed to process ad reward:", error);
+                tg.showAlert("An error occurred while crediting your reward.");
+            }
+        };
+
+        const handleMoveToBalance = async () => {
+            if(earningWalletBalance < 10) { tg.showAlert("You need at least 10 TK to move."); return; }
+            const btn = document.getElementById('move-to-balance-btn'); btn.disabled = true; btn.textContent = 'Moving...';
+            try {
+                const db = firebase.database();
+                await db.ref(`users/${tgUser.id}/balance`).set(firebase.database.ServerValue.increment(earningWalletBalance));
+                userState.balance += earningWalletBalance;
+                earningWalletBalance = 0;
+                localStorage.setItem(`earningWallet_${tgUser.id}`, '0');
+                tg.HapticFeedback.notificationOccurred('success');
+                tg.showAlert("Successfully moved to main balance!");
+            } catch(error) { console.error("Failed to move balance:", error); tg.showAlert("Failed to move balance. Please try again.");
+            } finally { btn.textContent = 'Move to Main Balance'; renderUI(); }
+        };
+
+        const renderWithdrawalHistory = () => {
+            const listEl = document.getElementById('withdrawal-history-list');
+            if (userTransactions.length === 0) { listEl.innerHTML = '<p style="text-align: center; opacity: 0.7; padding-top: 10px;">No withdrawal history found.</p>'; return; }
+            listEl.innerHTML = userTransactions.map(item => `
+                <div class="history-item">
+                    <div class="history-details">
+                        <p>${item.amount.toFixed(2)} TK - ${item.method}</p>
+                        <small style="opacity: 0.7;">${new Date(item.timestamp).toLocaleString()}</small>
+                    </div>
+                    <span class="history-status status-${item.status}">${item.status}</span>
+                </div>`).join('');
+        };
+        
+        const setupNavigation = () => {
+            const navButtons = document.querySelectorAll('.nav-btn'); const pages = document.querySelectorAll('.page');
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const pageId = button.dataset.page;
+                    pages.forEach(page => page.classList.remove('active'));
+                    document.getElementById(pageId).classList.add('active');
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    if (pageId === 'profile-page') { renderWithdrawalHistory(); }
+                    if (pageId === 'leaderboard-page') { renderLeaderboard(); }
+                    if (pageId === 'captcha-page') { renderCaptchaPage(); } // Render captcha page on click
+                });
+            });
+        };
+        
+        const setupEventListeners = () => {
+            popup.addEventListener('click', (e) => { if (e.target.classList.contains('popup-close-btn') || e.target.id === 'popup') closePopup(); });
+            document.querySelector('.leaderboard-toggle').addEventListener('click', (e) => {
+                if(e.target.classList.contains('toggle-btn')) {
+                    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    renderLeaderboard();
+                }
+            });
+            document.getElementById('dynamic-tasks-container').addEventListener('click', (e) => handleClaimTask(e));
+            document.getElementById('profile-page').addEventListener('submit', (e) => handleWithdraw(e));
+            document.getElementById('referral-section').addEventListener('click', (e) => { if(e.target.id === 'copy-ref-link-btn') copyReferralLink(); });
+            document.getElementById('move-to-balance-btn').addEventListener('click', handleMoveToBalance);
+            
+            // --- CAPTCHA EVENT LISTENERS ---
+            document.getElementById('captcha-submit-btn').addEventListener('click', handleCaptchaSubmit);
+            document.getElementById('captcha-canvas').addEventListener('click', () => renderCaptchaPage(true));
+        };
+
+        const renderAdTask = () => {
+            const container = document.getElementById('ad-task-container');
+            const now = Date.now();
+            const onBreak = userState.breakUntil && now < userState.breakUntil;
+            const limitReached = userState.dailyAdCount >= appConfig.dailyAdLimit;
+            let html = '';
+            if (onBreak) {
+                const remaining = Math.ceil((userState.breakUntil - now) / 60000);
+                html = `<div class="task-container"><img class="task-icon-img" src="https://img.icons8.com/ios-filled/100/hourglass.png" alt="icon"><div class="task-info"><h3>Break Time!</h3><p>Please wait for ${remaining} more minutes.</p></div><button class="action-btn" disabled>Waiting</button></div>`;
+            } else if (limitReached) {
+                html = `<div class="task-container"><img class="task-icon-img" src="https://img.icons8.com/ios-filled/100/stop-circled.png" alt="icon"><div class="task-info"><h3>Daily Limit Reached</h3><p>Come back tomorrow for more ads.</p></div><button class="action-btn" disabled>Limit</button></div>`;
+            } else {
+                html = `<div class="task-container"><img class="task-icon-img" src="https://img.icons8.com/ios-filled/100/play-button-circled.png" alt="icon"><div class="task-info"><h3>Watch a Rewarded Ad</h3><p>Earn ${appConfig.adValue || 0} TK for every ad.</p></div><button id="watch-ad-btn" class="action-btn">Watch Ad</button></div>`;
+            }
+            container.innerHTML = html;
+            if (!onBreak && !limitReached) { document.getElementById('watch-ad-btn').addEventListener('click', handleWatchAd); }
+        };
+
+        const handleClaimTask = async (e) => {
+            if (e.target.classList.contains('action-btn') && e.target.dataset.taskId) {
+                const taskId = e.target.dataset.taskId;
+                const task = appConfig.tasks[taskId];
+                if (!task || (userState.completedTasks && userState.completedTasks[taskId])) { tg.showAlert('You have already claimed this bonus.'); return; }
+                tg.openLink(e.target.dataset.taskUrl);
+                e.target.disabled = true; e.target.textContent = 'Claiming...';
+                setTimeout(async () => {
+                    try {
+                        const db = firebase.database(); const userRef = db.ref(`users/${tgUser.id}`);
+                        await userRef.child(`completedTasks/${taskId}`).set(true);
+                        await userRef.child('balance').set(firebase.database.ServerValue.increment(task.reward));
+                        userState.balance += task.reward;
+                        if (!userState.completedTasks) userState.completedTasks = {};
+                        userState.completedTasks[taskId] = true;
+                        tg.HapticFeedback.notificationOccurred('success');
+                        tg.showAlert(`Thank you! You received ${task.reward} bonus TK.`);
+                        renderUI();
+                    } catch (error) { tg.showAlert('Failed to claim bonus.'); e.target.disabled = false; e.target.textContent = 'Claim Bonus'; }
+                }, 5000);
+            }
+        };
+
+        const handleWithdraw = async (e) => {
+            if(e.target.id !== 'withdraw-form') return;
+            e.preventDefault();
+
+            const minRefsRequired = appConfig.minimumWithdrawReferrals || 0;
+            const userReferrals = userState.referrals || 0;
+            if (minRefsRequired > 0 && userReferrals < minRefsRequired) {
+                tg.showAlert(`Withdrawal failed. You need at least ${minRefsRequired} referrals. You currently have ${userReferrals}.`);
+                return;
+            }
+
+            const methodEl = document.getElementById('withdraw-method');
+            const accountNumber = document.getElementById('account-number').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const selectedMethod = appConfig.withdrawMethods.find(m => m.name === methodEl.value);
+            
+            if (isNaN(amount) || amount <= 0) { tg.showAlert("Please enter a valid amount."); return; }
+            if (!selectedMethod) { tg.showAlert("Invalid withdrawal method."); return; }
+            if (amount < selectedMethod.min) { tg.showAlert(`Minimum withdrawal for ${selectedMethod.name} is ${selectedMethod.min} TK.`); return; }
+            if (amount > userState.balance) { tg.showAlert("You don't have enough balance."); return; }
+            
+            const btn = document.getElementById('withdraw-submit-btn'); btn.disabled = true; btn.textContent = 'Submitting...';
+            const db = firebase.database();
+            try {
+                userState.balance -= amount;
+                renderUI(); 
+                await db.ref(`users/${tgUser.id}/balance`).set(firebase.database.ServerValue.increment(-amount));
+                const reqId = db.ref('withdrawals/pending').push().key;
+                const newRequest = { id: reqId, userId: tgUser.id, userName: `${userState.firstName} ${userState.lastName}`, method: selectedMethod.name, account: accountNumber, amount: amount, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP };
+                await db.ref(`withdrawals/pending/${reqId}`).set(newRequest);
+                userTransactions.unshift(newRequest);
+                renderWithdrawalHistory(); 
+                tg.HapticFeedback.notificationOccurred('success');
+                tg.showAlert("Withdrawal request submitted successfully!");
+                document.getElementById('withdraw-form').reset();
+            } catch (error) {
+                userState.balance += amount;
+                tg.HapticFeedback.notificationOccurred('error'); 
+                tg.showAlert("Failed to submit request. Your balance has been restored.");
+            } finally {
+                renderUI();
+                btn.disabled = false;
+                btn.textContent = 'Submit Request';
+            }
+        };
+
+        const copyReferralLink = () => {
+            const refLinkInput = document.getElementById('referral-link');
+            refLinkInput.select();
+            refLinkInput.setSelectionRange(0, 99999);
+            try {
+                navigator.clipboard.writeText(refLinkInput.value).then(() => {
+                    tg.HapticFeedback.notificationOccurred('success');
+                    tg.showAlert("Referral link copied!");
+                });
+            } catch (err) {
+                document.execCommand('copy');
+                tg.HapticFeedback.notificationOccurred('success');
+                tg.showAlert("Referral link copied!");
+            }
+        };
+
+        const renderLeaderboard = () => {
+            const activeBoard = document.querySelector('.toggle-btn.active').dataset.board;
+            const listEl = document.getElementById(activeBoard === 'referral' ? 'referral-leaderboard-list' : 'earning-leaderboard-list');
+            const data = leaderboardData[activeBoard];
+            document.getElementById('referral-board').style.display = activeBoard === 'referral' ? 'block' : 'none';
+            document.getElementById('earning-board').style.display = activeBoard === 'earning' ? 'block' : 'none';
+            listEl.innerHTML = '';
+            if (data.length === 0) { listEl.innerHTML = '<li>No data available.</li>'; return; }
+            data.forEach((user, index) => {
+                const score = activeBoard === 'referral' ? (user.referrals || 0) : (user.totalEarned || 0).toFixed(2);
+                const item = document.createElement('li'); item.className = 'leaderboard-item';
+                item.innerHTML = `<span class="rank">#${index + 1}</span><img src="${user.photoUrl || 'https://via.placeholder.com/40'}" alt="User"><span class="leaderboard-name">${user.firstName}</span><span class="leaderboard-score">${score}</span>`;
+                listEl.appendChild(item);
+            });
+        };
+
+        const renderDynamicTasks = () => {
+            const container = document.getElementById('dynamic-tasks-container'); container.innerHTML = '';
+            if (appConfig.tasks) {
+                const tasks = [];
+                for(const key in appConfig.tasks) { tasks.push({key, ...appConfig.tasks[key]}); }
+                tasks.reverse();
+                tasks.forEach(task => {
+                    const isCompleted = userState.completedTasks && userState.completedTasks[task.key];
+                    const el = document.createElement('div'); el.className = 'task-container';
+                    el.innerHTML = `<img class="task-icon-img" src="${task.icon}" alt="icon"><div class="task-info"><h3>${task.name}</h3><p>Get ${task.reward} bonus TK.</p></div><button class="action-btn" data-task-id="${task.key}" data-task-url="${task.url}" ${isCompleted ? 'disabled' : ''}>${isCompleted ? 'Claimed' : 'Claim Bonus'}</button>`;
+                    container.appendChild(el);
+                });
+            }
+        };
+
+        const renderReferralSection = () => {
+            const container = document.getElementById('referral-section');
+            const refLink = `https://t.me/${appConfig.botUsername}/app?startapp=${tgUser.id}`;
+            container.innerHTML = `<div class="card"><h3 style="text-align: center; margin-bottom: 10px;">Refer & Earn More!</h3><p style="text-align: center; opacity: 0.8; margin-bottom: 15px;">Invite friends and earn ${appConfig.referralBonus || 0} TK per referral.</p><input type="text" id="referral-link" value="${refLink}" readonly style="text-align: center; margin-bottom: 10px; cursor: pointer;"><button id="copy-ref-link-btn" class="action-btn" style="width: 100%;">Copy Link</button></div>`;
+        };
+
+        const renderWithdrawSection = () => {
+            const container = document.getElementById('withdraw-section'); let optionsHtml = '';
+            if (appConfig.withdrawMethods) { appConfig.withdrawMethods.forEach(method => { optionsHtml += `<option value="${method.name}">${method.name} (Min: ${method.min} TK)</option>`; }); }
+            
+            const minRefs = appConfig.minimumWithdrawReferrals || 0;
+            let referralNotice = '';
+            if (minRefs > 0) {
+                referralNotice = `<p style="font-size: 0.85rem; text-align: center; margin-bottom: 15px; opacity: 0.8;"><b>Note:</b> You need at least <b>${minRefs} referrals</b> to be eligible for withdrawal.</p>`;
+            }
+
+            container.innerHTML = `<form id="withdraw-form" class="card"><h3>Request Withdraw</h3>${referralNotice}<div class="form-group"><label for="withdraw-method">Method:</label><select id="withdraw-method" required>${optionsHtml}</select></div><div class="form-group"><label for="account-number">Account Number/ID:</label><input type="text" id="account-number" required></div><div class="form-group"><label for="amount">Amount:</label><input type="number" step="any" id="amount" required></div><button type="submit" id="withdraw-submit-btn" class="action-btn" style="width: 100%;">Submit Request</button></form>`;
+        };
+
+        const renderDynamicLinks = () => {
+            const container = document.getElementById('dynamic-links-container'); container.innerHTML = '';
+            if (appConfig.links) {
+                const links = [];
+                for (const key in appConfig.links) { links.push({key, ...appConfig.links[key]}); }
+                links.reverse();
+                links.forEach(link => {
+                    const el = document.createElement('div'); el.className = 'task-container card';
+                    el.innerHTML = `<img class="task-icon-img" src="${link.icon}" alt="icon"><div class="task-info"><h3>${link.name}</h3></div><button class="action-btn" onclick="window.Telegram.WebApp.openLink('${link.url}')">Visit</button>`;
+                    container.appendChild(el);
+                });
+            }
+        };
+
+        // --- NEW CAPTCHA FUNCTIONS ---
+
+        const generateCaptcha = () => {
+            const canvas = document.getElementById('captcha-canvas');
+            const ctx = canvas.getContext('2d');
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let text = '';
+            for (let i = 0; i < 6; i++) {
+                text += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            currentCaptchaText = text;
+
+            // Set canvas background and text color based on theme
+            const isDarkTheme = document.body.classList.contains('dark-theme');
+            ctx.fillStyle = isDarkTheme ? '#212940' : '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = 'bold 35px Poppins';
+            
+            // Draw noise lines
+            for (let i = 0; i < 5; i++) {
+                ctx.strokeStyle = `rgba(${Math.random()*255},${Math.random()*255},${Math.random()*255}, 0.3)`;
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.stroke();
+            }
+
+            // Draw characters with distortion
+            for (let i = 0; i < text.length; i++) {
+                ctx.save();
+                ctx.translate(20 + i * 30, Math.random() * 20 + 25);
+                ctx.rotate((Math.random() - 0.5) * 0.4);
+                ctx.fillStyle = isDarkTheme ? `hsl(${Math.random()*360}, 50%, 80%)` : `hsl(${Math.random()*360}, 50%, 40%)`;
+                ctx.fillText(text[i], 0, 0);
+                ctx.restore();
+            }
+        };
+        
+        const renderCaptchaPage = (forceNew = false) => {
+            const limit = appConfig.captchaLimit || 0;
+            const reward = appConfig.captchaReward || 0;
+            const count = userState.dailyCaptchaCount || 0;
+            const remaining = limit - count;
+
+            const infoEl = document.getElementById('captcha-info');
+            const containerEl = document.getElementById('captcha-container');
+            const inputEl = document.getElementById('captcha-input');
+            const submitBtn = document.getElementById('captcha-submit-btn');
+            
+            infoEl.innerHTML = `You have <b>${remaining}</b> captchas left today. <br>Reward: <b>${reward.toFixed(2)} TK</b> per correct solve.`;
+
+            if(remaining <= 0) {
+                infoEl.innerHTML = `You have reached the daily limit for solving captchas. Come back tomorrow!`;
+                containerEl.style.display = 'none';
+            } else {
+                containerEl.style.display = 'flex';
+                inputEl.value = '';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit';
+                if(forceNew || !currentCaptchaText) {
+                    generateCaptcha();
+                }
+            }
+        };
+
+        const handleCaptchaSubmit = async () => {
+            const inputEl = document.getElementById('captcha-input');
+            const userInput = inputEl.value;
+            const btn = document.getElementById('captcha-submit-btn');
+            
+            if (userInput.length !== 6) { tg.showAlert('Please enter the 6 characters from the image.'); return; }
+            
+            btn.disabled = true; btn.textContent = 'Verifying...';
+            
+            const isCorrect = userInput.toLowerCase() === currentCaptchaText.toLowerCase();
+            
+            // --- SHOW AD REGARDLESS OF THE RESULT ---
+            const adShown = await showAd('captcha_solve');
+            if(!adShown) {
+                btn.disabled = false; btn.textContent = 'Submit';
+                // Don't consume captcha attempt if ad fails to show
+                return;
+            }
+
+            const db = firebase.database();
+            const userRef = db.ref(`users/${tgUser.id}`);
+
+            // Consume one captcha attempt
+            userState.dailyCaptchaCount++;
+            await userRef.child('dailyCaptchaCount').set(userState.dailyCaptchaCount);
+
+            if (isCorrect) {
+                // Award points for correct answer
+                const reward = appConfig.captchaReward || 0;
+                earningWalletBalance += reward;
+                localStorage.setItem(`earningWallet_${tgUser.id}`, earningWalletBalance.toString());
+                userState.totalEarned += reward;
+                
+                // Update total earned in DB
+                await userRef.child('totalEarned').set(userState.totalEarned);
+
+                tg.HapticFeedback.notificationOccurred('success');
+                tg.showAlert(`Correct! +${reward.toFixed(2)} TK added to your Earning Wallet.`);
+            } else {
+                // Incorrect answer
+                tg.HapticFeedback.notificationOccurred('error');
+                tg.showAlert('Incorrect captcha. Please try the next one.');
+            }
+            
+            // Update UI and generate a new captcha
+            document.getElementById('earning-wallet-balance').textContent = earningWalletBalance.toFixed(2);
+            document.getElementById('total-earned').textContent = userState.totalEarned.toFixed(2);
+            currentCaptchaText = ''; // Clear current captcha to force a new one
+            renderCaptchaPage();
+        };
+
+        initApp();
+    });
+    </script>
+</body>
+</html>
