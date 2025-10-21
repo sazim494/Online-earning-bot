@@ -9,13 +9,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <style>
-        :root {
-            --font-family: 'Poppins', sans-serif;
-            --primary-color: #E74C3C; --secondary-color: #F39C12;
-            --background-light: #FDFEFE; --surface-light: #FFFFFF; --text-primary-light: #2C3E50; --text-secondary-light: #808B96; --border-light: #EAEDED;
-            --background-dark: #1B2631; --surface-dark: #283747; --text-primary-dark: #FDFEFE; --text-secondary-dark: #ABB2B9; --border-dark: #566573;
-            --success: #27AE60; --danger: #C0392B; --pending: #F39C12;
-        }
+    :root {
+        --font-family: 'Poppins', sans-serif;
+        --primary-color: 00BFA6;      /* একটি আধুনিক টিল (Teal) রঙ */
+        --secondary-color: 4CAF50;    /* একটি সতেজ সবুজ (Green) রঙ */
+        --background-light: F7F9F9;    /* হালকা ধূসর ব্যাকগ্রাউন্ড */
+        --surface-light: FFFFFF; 
+        --text-primary-light: 2C3E50; 
+        --text-secondary-light: 808B96; 
+        --border-light: EAECEE;
+        --background-dark: 1C2833; 
+        --surface-dark: 283747; 
+        --text-primary-dark: FDFEFE; 
+        --text-secondary-dark: B2BABB; 
+        --border-dark: 424949;
+        --success: 2ECC71; 
+        --danger: E74C3C; 
+        --pending: F39C12;
+    }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font-family); transition: background-color 0.3s, color 0.3s; -webkit-font-smoothing: antialiased; }
         body.light-theme { background-color: var(--background-light); color: var(--text-primary-light); }
@@ -179,16 +190,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const tg = window.Telegram.WebApp;
-        const firebaseConfig = {
-  apiKey: "AIzaSyBgByoyPhIaSnHpUt2CXpoyZ2hjtdcOvJg",
-  authDomain: "clickpay-earning-bot.firebaseapp.com",
-  databaseURL: "https://clickpay-earning-bot-default-rtdb.firebaseio.com",
-  projectId: "clickpay-earning-bot",
-  storageBucket: "clickpay-earning-bot.firebasestorage.app",
-  messagingSenderId: "814373698803",
-  appId: "1:814373698803:web:de0cbd0327f9cb35c30b86",
-  measurementId: "G-EJ4VFH4H35"
-};
+        
         
         let appConfig = {}; let userState = {}; let tgUser = {}; let earningWalletBalance = 0;
         let leaderboardData = { referral: [], earning: [] };
@@ -224,6 +226,16 @@
                 updateProgress(20);
                 
                 const configSnapshot = await db.ref('config').once('value');
+            const firebaseConfig = {
+  apiKey: "AIzaSyDeOckWtRP5KMOs_akS8ySPP8EkIsqXCtM",
+  authDomain: "online-earning-c4e4d.firebaseapp.com",
+  databaseURL: "https://online-earning-c4e4d-default-rtdb.firebaseio.com",
+  projectId: "online-earning-c4e4d",
+  storageBucket: "online-earning-c4e4d.firebasestorage.app",
+  messagingSenderId: "852082982737",
+  appId: "1:852082982737:web:3f5758de8b39b454989d70",
+  measurementId: "G-GX0TM7K5WH"
+};    
                 appConfig = configSnapshot.val() || {};
                 updateProgress(40);
 
